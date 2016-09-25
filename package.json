@@ -1,0 +1,31 @@
+{
+  "name": "CafeManager",
+  "version": "0.0.1",
+  "author": "Jose Nunez",
+  "description": "",
+  "main": "./app/index.html",
+  "window": {
+    "icon": "app/img/icon.png",
+    "toolbar": true,
+    "fullscreen": false,
+    "frame": true,
+    "width": 1024,
+    "height": 650
+  },
+  "dependencies": {},
+  "webkit": {
+    "page-cache": true
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.1",
+    "gulp-clean-css": "^2.0.12",
+    "gulp-concat": "^2.6.0",
+    "gulp-htmlmin": "^3.0.0",
+    "gulp-imagemin": "^3.0.3",
+    "gulp-minify": "0.0.14",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.3.2",
+    "gulp-uglify": "^2.0.0"
+  }
+}

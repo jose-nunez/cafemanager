@@ -1,0 +1,418 @@
+// Foundation for Apps
+// by ZURB
+// foundation.zurb.com
+// Licensed under MIT Open Source
+
+$foundation-version: '1.2.0';
+
+// Make sure the charset is set appropriately
+@charset "UTF-8";
+
+
+// $lib_dir: "../../bower_components/foundation-apps/scss/";
+// Libraries (let's make Normalize an external dependency eventually)
+@import "../../bower_components/foundation-apps/scss/vendor/normalize";
+
+// Helpers
+@import
+	"../../bower_components/foundation-apps/scss/helpers/functions",
+	"../../bower_components/foundation-apps/scss/helpers/mixins",
+	"../../bower_components/foundation-apps/scss/helpers/breakpoints",
+	"../../bower_components/foundation-apps/scss/helpers/images";
+
+// Global styles
+@import
+	"global";
+
+// Components
+@import
+	"../../bower_components/foundation-apps/scss/components/iconic",
+	"../../bower_components/foundation-apps/scss/components/action-sheet",
+	"../../bower_components/foundation-apps/scss/components/block-list",
+	"../../bower_components/foundation-apps/scss/components/button",
+	"../../bower_components/foundation-apps/scss/components/button-group",
+	"../../bower_components/foundation-apps/scss/components/card",
+	"../../bower_components/foundation-apps/scss/components/extras",
+	"../../bower_components/foundation-apps/scss/components/forms",
+	"../../bower_components/foundation-apps/scss/components/grid",
+	"../../bower_components/foundation-apps/scss/components/title-bar",
+	"../../bower_components/foundation-apps/scss/components/label",
+	"../../bower_components/foundation-apps/scss/components/list",
+	"../../bower_components/foundation-apps/scss/components/menu-bar",
+	"../../bower_components/foundation-apps/scss/components/modal",
+	"../../bower_components/foundation-apps/scss/components/motion",
+	"../../bower_components/foundation-apps/scss/components/notification",
+	"../../bower_components/foundation-apps/scss/components/off-canvas",
+	"../../bower_components/foundation-apps/scss/components/popup",
+	"../../bower_components/foundation-apps/scss/components/switch",
+	"../../bower_components/foundation-apps/scss/components/tabs",
+	"../../bower_components/foundation-apps/scss/components/accordion",
+	"../../bower_components/foundation-apps/scss/components/typography",
+	"../../bower_components/foundation-apps/scss/components/utilities";
+
+//  *******************************************
+// FOUNDATION FIXINS
+//  *******************************************
+.grid-content{
+	overflow-x:hidden;
+}
+
+.menu-bar>li>a>.iconic{ 
+	margin:0px;
+}
+
+
+//  *******************************************
+
+html{overflow:hidden;}
+
+.no-select-text {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.bold{
+	font-weight: bold;
+}
+
+.no-padding{ 
+	padding:0px !important;;
+}
+$padding-size:10px;
+.padding-top{padding: $padding-size 0px 0px 0px !important;}
+.padding-bottom{padding: 0px 0px $padding-size 0px !important;}
+.padding-vertical{padding: $padding-size 0px !important;}
+.padding-horizontal{padding: 0px $padding-size !important;}
+.padding{padding: $padding-size !important;}
+$margin-size: 10px;
+.margin-left-big{margin: 0px 0px 0px $margin-size*2 !important;}
+.margin-left{margin: 0px 0px 0px $margin-size !important;}
+.margin-right{margin: 0px $margin-size 0px 0px !important;}
+.no-margin{margin:0px !important;}
+$rounded-size: 10px;
+.rounded-right{border-radius: 0px $rounded-size $rounded-size 0px !important;}
+.rounded-left{border-radius: $rounded-size 0px 0px $rounded-size !important;}
+
+/* .small-margin{ 
+	margin:0.2rem;
+	&.button{
+		margin:0 0.2rem;
+	}
+} */
+
+
+//  *******************************************
+// NEW Cafe Manager
+//  *******************************************
+
+.mainlogo{height:30px};
+
+#page-status{width:60px;}
+
+#categoria_az_breadcrum{
+	max-width: 40%;
+	min-width:20%;
+	display:initial;
+	text-align:center;
+}
+.ellipsis{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#seleccion_productos{
+	background-color: #F9F6AF;
+}
+
+$p-box-height: 10rem;
+$p-name-height: 3rem;
+// $p-img-height: 5rem;
+.card.product{
+	height: $p-box-height;
+	border: initial;
+	overflow:hidden;
+	&.grid-block>div:first-child{
+		border-right-style: solid;
+		border-right-color: #ededed;
+		border-right-width: 2px;
+		// border-radius: 10px;	
+	}
+	&.grid-block>div:last-child{
+		overflow-y: auto;
+		overflow-x: hidden;
+		.block-list a{
+			padding-left:0px;
+			padding-right:0px;
+		}
+	}
+}
+.pname{
+	height: $p-name-height;
+}
+.pimg{
+	// margin: 0 auto;
+	width: 100%;
+	// height: $p-img-height;
+	height: $p-box-height - $p-name-height;
+	// border-style: solid;
+	// border-color: #A2A221;
+	// border-width: 1px;
+	// border-radius: 10px;
+	background-size: cover;
+	background-position: center; 
+	background-repeat: no-repeat;
+	background-color: white;
+	overflow: hidden;
+
+	&.no-img{
+		background-image:url(../img/no-img.jpg);
+		background-size: 50%;
+	}
+
+	div{
+		float: left;
+		background-size: cover;
+		&.img-2{
+			background-position-x: center;
+			width: 50%;
+			height: 100%;
+		}
+		&.img-plus{
+			width: 50%;
+			height: 50%;
+		}
+	}
+
+}
+.pbox{
+	// background-color:red;
+	padding:5px 10px !important;
+	// border-style: solid;
+	// border-color: #A2A221;
+	// border-width: 5px;
+	// border-radius: 10px;
+	&.selected .card.product{
+		border: 3px solid OliveDrab;
+	}
+}
+
+//  *******************************************
+// OLD Cafe Manager
+//  *******************************************
+// .products-frame{
+//  padding: 30px;
+// }
+
+.p-box{
+	$p-box-width: 130px;
+	$p-box-height: 170px;
+	$p-box-margin: 5px;
+	$p-box-border-width:3px;
+	$p-box-expanded-width: $p-box-width * (1+3/4);
+	$p-box-expanded-left: - $p-box-expanded-width/4 + $p-box-margin*2;
+	$p-box-expanded-height: $p-box-height * (1+1/4);
+	$p-box-expanded-top: - $p-box-expanded-height/8 + $p-box-margin*2;
+
+	// $p-desc-with: $p-box-width - $p-box-border-width*4;
+	$p-desc-height: $p-box-height - $p-box-border-width*4;
+	$p-desc-padding: 5px;
+
+	$p-img-width: 90px;
+	$p-img-height: 90px;
+
+	float: left;
+	width: $p-box-width;
+	height: $p-box-height;
+	text-align: center;
+	margin: $p-box-margin;
+	cursor:pointer;
+	// padding: $p-box-padding;
+	
+	.p-floater{
+	width: $p-box-width;
+	height: $p-box-height;
+	overflow: hidden;
+	left: 0px;
+	top: 0px;
+	
+	background-color: #D6CDCD;
+
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	border-width: $p-box-border-width;
+	border-style: solid; 
+	border-color: #D6CDCD;
+
+	.p-inner-floater{
+	height: 100%;
+	}
+	}
+
+	&:hover .p-floater{
+	border-color: #989797;
+	}
+
+	&.expandable.expanded{
+	width: $p-box-expanded-width;
+	height: $p-box-expanded-height;
+	
+	.p-floater{
+	width: $p-box-expanded-width;
+	height: $p-box-expanded-height;
+
+	$transition-duration: 0.2s;
+	$transition-delay: 0.1s;
+	transition-property: width,height,left;
+	transition-duration: $transition-duration;
+	// transition-delay:$transition-delay;
+	
+	.p-inner-floater{
+	width: $p-box-expanded-width;
+	}
+	.p-desc{
+	width: 50%;
+	}
+	.p-prices{
+	display: block;
+	}
+	}
+	}
+
+	&:hover.expandable:not(.expanded):not(.overed) {
+	position: relative;
+	.p-floater{
+	position:absolute;
+	width: $p-box-expanded-width;
+	height: $p-box-expanded-height;
+	left: $p-box-expanded-left;
+	top: $p-box-expanded-top;
+
+	$transition-duration: 0.2s;
+	$transition-delay: 0s;
+	transition-property: width,top,height,left;
+	transition-duration: $transition-duration;
+	transition-delay:$transition-delay;
+
+	.p-inner-floater{
+	width: $p-box-expanded-width;
+	}
+	.p-desc{
+	width: 50%;
+	}
+	.p-prices{
+	display: block;
+	}
+	}
+	}
+
+	&:hover.overable:not(.expanded) ,&.overable.overed {
+	.p-floater{ 
+	position: relative;
+	.p-prices{
+	position:absolute;
+	}
+	}
+	}
+
+	&.selected .p-floater{
+	border-color: black;
+	.p-prices ul li.selected{
+	background-color: #B4B6E6;
+	}
+	}
+	
+	.p-desc{
+	width: 100%;
+	height: 100%;
+	float: left;
+
+	&.p-prices{
+	overflow-y: auto;
+	background-color: rgba(255,255,255, 0.9);
+	ul{
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+	li:hover:not(.selected){
+		background-color: rgba(228, 227, 227, 0.9);
+	}
+	}
+	}
+	&:not(.p-prices){
+	padding: $p-desc-padding;
+	
+	.p-img{
+	margin: 0 auto;
+	width: $p-img-width;
+	height: $p-img-height;
+	border-style: solid;
+	border-color: #A2A221;
+	border-width: 1px;
+	border-radius: 10px;
+	background-size: cover;
+	background-color: white;
+	overflow: hidden;
+	
+	&.no-img{
+		background-image:url(../img/no-img.jpg);
+		background-size: 50%;
+		background-repeat: no-repeat;
+		background-position: center; 
+	}
+
+	div{
+		float: left;
+		background-size: cover;
+		&.img-2{
+		background-position-x: center;
+		width: 50%;
+		height: 100%;
+		}
+		&.img-plus{
+		width: 50%;
+		height: 50%;
+		}
+	}
+	}
+	.p-name{
+	}
+	}
+	}
+}
+
+ul.pagination li {
+	display: inline-block;
+	margin-right: 10px;
+}
+
+.category{
+	&.special{
+	// color:#008B8B;
+	color:#DC143C;
+	// color:green;
+	// color:#00008B;
+	}
+}
+ul.pagination{
+	li{
+	a{
+	text-decoration: none;
+	}
+	
+	&.active{
+	a{
+	color:#DC143C;
+	font-weight: bold;
+	}
+	}
+	&.disabled{
+	// display: none;
+	}
+	}
+}

@@ -1,0 +1,190 @@
+/*
+CAFE MANAGER
+Product Data Models
+*/
+'use strict';
+
+/* PRECIO *********************/
+var PriceDM = newClass({
+	init: function(data){this.superCall('CollectionableDM','init',data);
+		this.id = data.precio_producto_id;
+		this.product = data.producto_id;
+		this.pack = data.paquete_id;
+		this.type = data.tipo; // 0:Costo|1:Venta|2:Oferta|3:Paquete|4:Personalizado(en el momento)
+		this.name = data.nombre;
+		this.amount = data.valor;
+		this.units = data.unidades;
+		this.priority = data.prioridad;
+		this.description = data.descripcion;
+		this.created = data.creado;
+		this.active = data.activo;
+		this.start = data.vigencia_ini;
+		this.end = data.vigencia_fin;
+		this.deleted = data.eliminado;
+	},
+	getName: function(type,collection){
+		if(this.type==0) return 'cost';
+		else if(this.type==1) return 'normal';
+		else if(this.type==2) return this.name;
+		else if(this.type==3 && type=='pack') return collection.get(this.product).name;
+		else if(this.type==3 && type=='single') return collection.get(this.pack).name;
+		else if(this.type==4) return 'special';
+	},
+},'CollectionableDM');
+
+
+/* COLECCION DE PRECIOS *********************/
+var PricesDM = newClass({
+	__elemClass__: PriceDM,
+	init: function(data){this.superCall('CollectionDM','init',data);
+
+	}
+},'CollectionDM');
+
+
+/* CATEGORIA *********************/
+var CategoryDM = newClass({
+	init: function(data){this.superCall('CollectionableDM','init',data);
+		this.id = data.categoria_id;
+		this.name = data.nombre;
+		this.parent = data.superior;
+		this.priority = data.prioridad;
+	},
+	getChildren: function(){
+		if(!this.collector) return [];
+		var result = [];
+		var category;
+		for (var i = 0; i < this.collector.length(); i++) {
+			category = this.collector.get(i);
+			if(category.parent == this.id) result.push(category.id);
+		}
+		return result;
+	},
+	setChildren: function(){
+		this.children = this.getChildren();
+	}
+},'CollectionableDM');
+
+
+/* COLECCION DE CATEGORÍAS *********************/
+var CategoriesDM = newClass({
+	__elemClass__: CategoryDM,
+	init: function(data){this.superCall('CollectionDM','init',data);
+		this.setSelected(1);
+		this.specialIds = this.getSpecialIds();
+		for(var key in this.collection){
+			this.collection[key].setChildren();
+		}
+	},
+	setSelected: function(catId){
+		if(!catId) catId=1;
+		this.selected = catId;
+	},
+	getSpecialIds: function(){
+		return [1,2,3,4,5,6];
+	}
+},'CollectionDM');
+
+
+/* PRODUCTO *********************/
+var ProductDM = newClass({
+	init: function(data){this.superCall('CollectionableDM','init',data);
+		this.type = data.tipo;
+		this.id = data.producto_id;
+		this.code = data.codigo;
+		this.name = data.nombre;
+		this.description = data.descripcion;
+		this.deleted = data.eliminado;
+		this.repice = data.receta;
+		this.img = data.imagen;
+		this.prices = data.precios; // Vienen ordenados por prioridad desde la BD!
+		this.categories = data.categorias;
+
+		this.status = {priceable: true,selectable: true,expanded:false,overed:false,enabled:data.habilitado,stock:data.existencias};
+	},
+	getClasses: function(){
+		return {
+			expandable: this.status.priceable && this.collector.options.allPriceable=='expand',
+			overable: this.status.priceable && this.collector.options.allPriceable=='over',
+			expanded: this.status.expanded || (this.collector.options.allExpanded && this.collector.options.allPriceable=='expand'),
+			overed: this.status.overed || (this.collector.options.allOvered && this.collector.options.allPriceable=='over'),
+			selected: this.collector.selected[this.id]
+		};
+	},
+	getImg: function(){
+		return [this.img];
+	},
+/*	getPrice: function(priceId){
+		return this.prices[index];
+	},*/
+	getPrices: function(){
+		return this.prices;
+	},
+	getPriceClasses: function(priceId){
+		return {'selected':this.collector.selected[this.id]==priceId};
+	}
+},'CollectionableDM');
+
+
+/* PAQUETE *********************/
+var PackDM = newClass({
+	// init: function(data){
+	init: function(data){this.superCall('ProductDM','init',data);
+		this.id = data.paquete_id;
+		this.products = data.products;
+	},
+	getImg: function(){
+		var result = [];var img;
+		for(var key in this.products){
+			result = result.concat(this.collector.get(this.products[key]).getImg());
+		}
+		return result;
+	},
+	getProducts: function(){
+
+	},
+	/*getPrice: function(index){
+		var result = [];var img;
+		for(var key in this.products){
+			result = result.concat(this.collector.get(this.products[key]).getImg());
+		}
+		return result;
+	},*/
+	/*getPrices: function(){
+		var result = [];var img;
+		for(var key in this.products){
+			result = result.concat(this.collector.get(this.products[key]).getPrice(this.id));
+		}
+		return result;
+	},*/
+},'ProductDM');
+
+
+/* COLECCION DE PRODUCTOS *********************/
+var ProductsDM = newClass({
+	__elemClass__: {single:ProductDM,pack:PackDM},
+	options: undefined,
+	selected: {}, // {productId:priceIndex, ...}
+
+	// init: function(data){
+	init: function(data){this.superCall('CollectionDM','init',data);
+		this.options = data.options;
+	},
+	setSelected: function(id,priceIndex){
+		if(priceIndex===false || this.options.allSelectable=="none" || !this.index[id].status.selectable){
+			delete(this.selected[id]);
+		}
+		else{
+			if(this.options.allSelectable!='multiple') this.clearSelected();
+			this.selected[id] = priceIndex;
+		}
+	},
+	switchSelected: function(id){
+		var selected = this.selected[id];
+		if(selected!==false) this.setSelected(id,false);
+		else this.setSelected(id,0);
+	},
+	clearSelected: function(){
+		this.selected = {};
+	},
+},'CollectionDM');

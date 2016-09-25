@@ -1,0 +1,124 @@
+<!-- <div class="grid-block vertical"> -->
+
+<!-- PRODUCTOS -->
+<div class="grid-block">
+	
+	<div id="seleccion_productos" class="grid-content no-padding">
+	
+		<div class="grid-content padding">
+
+			<span class="inline-label no-margin">		
+				<span class="form-label rounded-left" ng-click="focus('inputfilterQuery',true)">
+					<img zf-iconic="" icon="Magnifying-glass" size="small" />
+				</span>
+				<input id="inputfilterQuery" type="text" ng-focus="selectAll('inputfilterQuery')" ng-model="filterOptions.pre_query" ng-change="filterQuery(filterOptions.pre_query)" ng-model-options="{debounce:300}" ng-class="{'rounded-right':!isFilterActive('any')}" />
+				<span id="categoria_az_breadcrum" class="form-label primary ellipsis" ng-show="isFilterActive('category') || isFilterActive('letter')">
+					<h5 ng-show="isFilterActive('category')">{{categories.selected.name | translate}}</h5>
+					<h5 ng-show="isFilterActive('category') && isFilterActive('letter')"> | </h5>
+					<h5 ng-show="isFilterActive('letter')">{{filterOptions.letter}}</h5>
+				</span>
+				<a class="button rounded-right" ng-show="isFilterActive('any')" ng-click="cleanFilters(true)"><img zf-iconic="" icon="circle-x" size="small" /></a>
+				
+				<a ng-show="getPageCount()>1" ng-click="prevPage()" class="button rounded-left margin-left-big"> &lt; </a>
+					<span id="page-status" ng-show="getPageCount()>1" class="form-label">
+						{{ paginationOptions.current + '/'+ getPageCount()}}
+					</span>
+				<a ng-show="getPageCount()>1" ng-click="nextPage()" class="button rounded-right"> &gt; </a>
+			</span>
+		</div>
+
+		<!-- LISTADO DE PRODUCTOS -->
+		<!-- <dir-pagination-controls pagination-id="products_pagination" boundary-links="true" on-page-change="pageChanged(newPageNumber)" ></dir-pagination-controls> -->
+
+		<!-- <div class="products-list clearfix">
+			<p ng-hide="$parent.$parent.$parent.filteredProducts.length">{{ "no products" | translate }}</p>
+			<div class="p-box-wrapper" current-page="paginationOptions.current" pagination-id="products_pagination" dir-paginate="product in $parent.$parent.$parent.filteredProducts = (products.collection | filterProductsQuery:filterOptions.query | filterProductsCategories:categories.selected | filterProductLetter: filterOptions.letter |updateSelected:products:refreshSelection | orderBy:'name') | itemsPerPage: paginationOptions.itemsPerPage">
+			<div class="p-box" ng-class="product.getClasses(products.isSelected(product),products.options)" ng-click="setSelectedProduct(product);" ng-dblclick="addProductCheck(product)" right-click="consoleamelo(product)">
+				<div class="p-floater"><div class="p-inner-floater">
+					<div class="p-desc">
+						<product-img></product-img>
+						<span class="p-name">{{product.name}}</span>
+					</div>
+					<div class="p-prices p-desc">
+						<ul>
+							<li ng-repeat="price in product.prices.collection | filterPrices | orderBy:'priority'" ng-click="setSelectedProduct(product,price);$event.stopPropagation();" ng-dblclick="addProductCheck(product,price);$event.stopPropagation();" ng-class="price.getClasses(products.isSelected(product,price))" >
+								{{ price.getName(product.type) | translate }}: {{price.amount |  customCurrency:"$":",":".":0}}
+							</li>
+						</ul>
+					</div>
+				</div></div>
+			</div>
+			</div>
+		</div> -->
+
+		
+		<p ng-hide="countFilteredProducts()">{{ "no products" | translate }}</p>
+		<div class="grid-block no-margin" ng-class="getClassGrid()">
+			
+			<!-- <div class="pbox" -->
+			<div class="pbox" ng-class="{'selected':products.isSelected(product)}"
+				ng-click="setSelectedProduct(product);" ng-dblclick="addProductCheck(product)" right-click="consoleamelo(product)" 
+				pagination-id="products_pagination"  current-page="paginationOptions.current"
+				dir-paginate="product in $parent.$parent.$parent.filteredProducts = (products.collection | filterProductsQuery:filterOptions.query | filterProductsCategories:categories.selected | filterProductLetter: filterOptions.letter |updateSelected:products:refreshSelection | orderBy:'name') | itemsPerPage: paginationOptions.itemsPerPage"
+			>
+				<div class="card product" ng-class="{'small-up-2':UIOptions.showPrices,'grid-block':UIOptions.showPrices,'no-margin':UIOptions.showPrices,'no-padding':UIOptions.showPrices}">
+					<div class="no-padding">
+						<product-img></product-img>
+						<div class="pname v-align">
+							<div class="text-center align-center">
+								{{product.name}}
+							</div>
+						</div>
+					</div>
+					<div ng-if="UIOptions.showPrices" class="no-padding">
+						<section class="block-list no-margin"><ul>
+							<li class="text-center" ng-repeat="price in product.prices.collection | filterPrices | orderBy:'priority'" ng-click="setSelectedProduct(product,price);$event.stopPropagation();" ng-dblclick="addProductCheck(product,price);$event.stopPropagation();" ng-class="price.getClasses(products.isSelected(product,price))">
+								<a>{{ price.getName(product.type) | translate }}: {{price.amount |  customCurrency:"$":",":".":0}}</a>
+							</li>
+						</ul></section>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<!-- <dir-pagination-controls pagination-id="products_pagination" boundary-links="true" on-page-change="pageChanged(newPageNumber)" ></dir-pagination-controls> -->
+
+		<!-- Botones varios -->
+		<a ng-show="getPageCount()>1" ng-click="prevPage()" class="button">Anterior pagina</a>
+		<a ng-show="getPageCount()>1" ng-click="nextPage()" class="button">Siguiente pagina</a>
+		<hr/>
+		<a class="button" ng-click="products.clearSelected()">Limpiar seleccion</a>
+
+		<a class="button" ng-click="setPrevSelectedProduct(true,true)">Anterior single</a>
+		<a class="button" ng-click="setPrevSelectedProduct(false,true)">Anterior producto</a>
+		<a class="button" ng-click="setNextSelectedProduct(false,true)">Siguiente producto</a>
+		<a class="button" ng-click="setNextSelectedProduct(true,true)">Siguiente single</a>
+
+		<label>
+			Muestra lista seleccionados
+			<div class="switch small"><input type="checkbox" id="my_switch" ng-model="testillo"><label for="my_switch"></label></div>
+		</label>
+
+		<!-- SELECCION -->
+		<div ng-if="testillo">
+			Seleccionados:
+			<ul>
+				<li ng-if="products.selected">
+					<span class="p-name">[selected] {{products.selected.product.name}}</span>: precio <span class="p-name">{{ products.selected.price.getName(products.selected.product.type) | translate }}</span>
+				</li>
+				<li ng-if="products.selectedSingle">
+					<span class="p-name">[selectedSingle] {{products.selectedSingle.product.name}}</span>: precio <span class="p-name">{{ products.selectedSingle.price.getName('single') | translate }}</span>
+				</li>
+				<li ng-repeat="pair in products.selectedMultiple.single">
+					<span class="p-name">{{pair.product.name}}</span>: precio <span class="p-name">{{ pair.price.getName('single') | translate }}</span>
+				</li>
+				<li ng-repeat="pair in products.selectedMultiple.pack" >
+					<span class="p-name">{{pair.product.name}}</span>: precio <span class="p-name">{{ pair.price.getName('pack') | translate }}</span>
+				</li>
+			</ul>
+		</div>
+		<p>{{countFilteredProducts()}} producto{{countFilteredProducts()!=1?'s':''}} listado{{countFilteredProducts()!=1?'s':''}}</p>
+	</div>
+</div>
+<!-- </div> -->

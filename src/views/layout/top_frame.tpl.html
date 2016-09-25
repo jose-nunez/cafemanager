@@ -1,0 +1,49 @@
+
+<div class="grid-block show-for-medium"><div class="grid-content">
+	<img src="img/logo_app.png" class="mainlogo"/>Barra iformacion
+</div></div>
+
+
+<!-- MENU GENERAL -->
+<div class="grid-block">
+	<!-- MEDIUM-LARGE SCREEN _____________________________________ -->
+	<div class="grid-content show-for-medium noscroll no-padding">
+		<div class="menu-group">
+			<div class="menu-group-left">
+			<ul class="menu-bar">
+				<li><a ui-sref=".tables" >Mesas</a></li>
+				<li><a>Precios</a></li>
+				<li><a ui-sref=".addOrder" >Agergar producto</a></li>
+				<li><a >Caja</a></li>
+				<li><a >Reservas</a></li>
+				<li><a >Cuentas</a></li>
+				<li class="hide-for-large"><a ui-sref=".addOrder.filters({filtersTab:'categories'})">Categorías</a></li>
+				<li class="hide-for-large"><a ui-sref=".addOrder.filters({filtersTab:'alphabet'})">A-Z</a></li>
+				<li class="hide-for-large"><a ui-sref=".addOrder.tableCount">$</a></li>
+			</ul>
+			</div>
+			<div class="menu-group-right">
+			<ul class="menu-bar">
+			<li><a title="Infromes" href="#"><img zf-iconic="" icon="document" size="small" ></a></li> <!-- Informes -->
+			<li><a title="Configuración" zf-open="products_options" ><img zf-iconic="" icon="cog" size="small" class="iconic-color-secondary"></a></li> <!-- Configuración -->
+			</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- SMALL SCREEN _____________________________________ -->
+	<div class="grid-content hide-for-medium no-padding">
+		<ul class="menu-bar">
+				<li><a ui-sref=".tables" >M</a></li>
+				<li><a>$?</a></li>
+				<li><a ui-sref=".addOrder.filters({filtersTab:'categories'})"><img zf-iconic="" icon="flag" size="small" ></a></li>
+				<li><a ui-sref=".addOrder.filters({filtersTab:'alphabet'})">A-Z</a></li>
+				<li><a ui-sref=".addOrder.tableCount" >$</a></li>
+				<li><a ui-sref=".addOrder" ><img zf-iconic="" icon="Chevron" data-direction="left" size="small" ></a></li>
+			</ul>
+			<div class="menu-group-right"><ul class="menu-bar secondary">
+		</ul></div>
+		</div>
+	</div>
+
+</div>

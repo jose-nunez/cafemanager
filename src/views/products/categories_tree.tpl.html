@@ -1,0 +1,44 @@
+<div class="grid-block vertical" ng-click="autohideFiltersFrame($event)">
+	<!-- BUSQUEDA -->
+	<!-- <div class="grid-block shrink">
+		<div class="grid-content padding-top">
+			<span class="inline-label no-margin">
+				<span class="form-label"><img zf-iconic="" icon="Magnifying-glass" size="small" /></span>
+				<input type="text" ng-model="filterOptions.pre_query" ng-change="filterQuery(filterOptions.pre_query)" ng-model-options="{debounce:300}" />
+				<a class="button " ng-click="filterQuery('')"><img zf-iconic="" icon="circle-x" size="small" /></a>
+			</span>
+		</div>
+	</div> -->
+	<!-- Tabs -->
+	<div class="grid-block shrink show-for-large">
+		<div class="grid-content no-padding">
+			<ul class="menu-bar secondary">
+				<li ><a ng-click="filtersTab='categories';">Categorías</a></li>
+				<li ><a ng-click="filtersTab='alphabet'">A-Z</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="grid-block">
+		<div class="grid-content no-padding" ng-show="filtersTab=='categories'">
+			<section class="block-list">
+				<ul>
+					<li class="text-center" ng-repeat="category in categories.collection | orderBy:'priority'">
+						<a right-click="consoleamelo(category)" ng-click="setSelectedCategory(category);" class="shut-panel"><span class="category shut-panel" ng-class="category.getClasses(categories.selected,categories.specialIds)">{{category.name | translate }}</span></a>
+					</li>
+				</ul>
+			</section>
+		</div>
+
+		<div class="grid-content no-padding" ng-show="filtersTab=='alphabet'">
+			<ul class="menu-bar" ng-repeat="letters in [['A','B','C','D'],['E','F','G','H'],['I','J','K','L'],['M','N','Ñ','O'],['P','Q','R','S'],['T','U','V','W'],['X','Y','Z','0-9']]">
+				<li ng-repeat="letter in letters" class="shut-panel"><a class="shut-panel" ng-click="filterLetter(letter);">{{letter}}</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<!-- <div class="grid-block shrink" ng-if="isFilterActive('any')">
+		<div class="grid-content padding-top text-center">
+			<a class="button" ng-click="cleanFilters(true)">Quitar filtro</a>
+		</div>
+	</div> -->
+</div>

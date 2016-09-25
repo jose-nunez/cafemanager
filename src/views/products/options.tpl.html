@@ -1,0 +1,26 @@
+<a ng-click="startServer()" class="button">Editar extras</a>
+
+<label><input type="radio" ng-model="language" value='es' ng-change="changeLanguage(language)" />Español </label>
+<label><input type="radio" ng-model="language" value='en' ng-change="changeLanguage(language)" />English </label>
+
+<strong>Seleccion:</strong>
+<label>
+	<input type="checkbox" ng-model="productsOptions.switchSelection" /> Deseleccionable
+</label>
+<label><input type="radio" ng-model="productsOptions.allSelectable" value="multiple" ng-change="" />Multiple </label> 
+<label><input type="radio" ng-model="productsOptions.allSelectable" value="unit" ng-change="products.clearSelected(true)" />Única </label> 
+<label><input type="radio" ng-model="productsOptions.allSelectable" value="none" ng-change="products.clearSelected()" />No seleccionables </label> 
+<br>
+<strong>Precios:</strong><br />
+	<label><input type="radio" ng-model="productsOptions.allPriceable" value="expand">Expandible </label> 
+	<label ng-show="productsOptions.allPriceable=='expand'">
+		<input type="checkbox" ng-model="productsOptions.allExpanded" /> Expandir todo
+	</label>
+<br />
+	<label><input type="radio" ng-model="productsOptions.allPriceable" value="over">Sobre </label> 
+	<label ng-show="productsOptions.allPriceable=='over'">
+		<input type="checkbox" ng-model="productsOptions.allOvered" /> Sobre todo
+	</label>
+<br />
+	<label><input type="radio" ng-model="productsOptions.allPriceable" value="none">Ninguno </label>
+<br />	

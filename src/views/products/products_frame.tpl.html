@@ -1,0 +1,25 @@
+<div class="grid-block" >
+	<!-- SMALL -->
+	<!-- 
+		zf-if caga cuando cambia de pantalla por el ui-view. 
+		Debe tener relación con la constante destrucción y creación del controlador por
+		este último.
+	 -->
+	<!-- <div zf-if="small only" class="grid-block"> -->
+	<div class="grid-block show-for-small-only">
+		<div class="grid-block" ui-view="small"></div>
+	</div>
+	<!-- MEDIUM -->
+	<!-- <div zf-if="medium only" class="grid-block"> -->
+	<div class="grid-block show-for-medium-only">
+		<div class="grid-block" 		ui-view="medium-left"></div>
+		<div class="grid-block small-4" ui-view="medium-right" ></div>
+	</div>
+	<!-- LARGE -->
+	<!-- <div zf-if="large" class="grid-block"> -->
+	<div class="grid-block show-for-large">
+		<div class="grid-block small-2" ui-view="large-left"></div>
+		<div class="grid-block" 		ui-view="large-center"></div>
+		<div class="grid-block small-4" ui-view="large-right" ng-hide="is('app.products.lookPrices')"></div>
+	</div>
+</div>

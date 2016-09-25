@@ -1,0 +1,86 @@
+/**************************************
+Definiciones de clases y herencia
+*****************************************/
+'use strict';
+
+// var classDefInherance = {};
+
+
+function newClass(newPrototype,parentClass){
+	var classDef = function(data){
+		this.init(data);
+	};
+	if(!parentClass) classDef.prototype = newPrototype;
+	else{
+		newPrototype.superCall = function(parClass,method,args){
+			if((window[parClass]).prototype[method])
+				return (window[parClass]).prototype[method].call(this,args);
+		}
+
+		for(var k in newPrototype){ newPrototype[k] = {value:newPrototype[k],enumerable: true,configurable: true,writable: true}; }
+		classDef.prototype = Object.create((window[parentClass]).prototype,newPrototype);
+	}
+	return classDef;
+}
+
+
+var CollectionableDM = newClass({
+	collector:undefined,
+	init: function(data){
+		if(data.collector) this.collector = data.collector;
+	},
+});
+
+var CollectionDM = newClass({
+	collection: undefined,//NO INICIALIZAR ACA. ANGULARJS CAGA!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	index: undefined,
+
+	init: function(JSON_data){
+		var data;
+		if(typeof JSON_data=="string") data = JSON.parse(JSON_data);
+		else data = JSON_data;
+		this.collection = [];
+		this.index = {};
+		for(var i in data.collection){
+			this.add(data.collection[i]);
+		}
+	},
+	add: function(data){
+		/*console.log('Deberia ser un objeto y no una colección');
+		console.log(data);*/
+		var type;
+		var element;
+		data.collector = this;
+		if((type=data.type || data.tipo) && this.__elemClass__[type])
+			element = new (this.__elemClass__[type])(data);
+		else element = new (this.__elemClass__)(data);
+		
+		// element.collector = this;
+
+		if(element.id) this.index[element.id] = element;
+		this.collection.push(element);
+
+	},
+	get: function(i){
+		return this.index[i]? this.index[i] : this.collection[i];
+	},
+	length: function(){
+		return this.collection.length;
+	},
+});
+
+
+function randomNumber(min,max){
+	if(!min) min = 0;
+	if(!max) max = 100;
+	return Math.floor(Math.random()*(max-min+1)+min);
+}
+
+function genUID(){
+	var UID;
+	while((UID=Math.random().toString(36).substr(2,16)).length<16){
+		//itera
+		;
+	}
+	return UID;
+}

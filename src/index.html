@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="cafeManagerApp" ng-controller="MainCtrl">
+<head ng-controller="HeadCtrl">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title ng-bind-template="{{::windowTitle}}">Cafe Manager</title>
+	<link href="{{::windowIconUrl}}" type="image/x-icon" rel="shortcut icon" />
+
+
+	<link rel="stylesheet" type="text/css" href="css/cafemanager.css">
+	<!-- <link rel="stylesheet" type="text/css" href="bower_components/angular-hotkeys/build/hotkeys.min.css"> -->
+	
+<!-- MAS ANTIGUOS COMENTADOS-->
+<!-- 
+	<script type="text/javascript" src="bower_components/ng-scrollbar/dist/ng-scrollbar.js"></script>
+	<script type="text/javascript" src="bower_components/angular-mousewheel/mousewheel.js"></script>
+	<script type="text/javascript" src="bower_components/hamsterjs/hamster.js"></script>
+ -->
+	<script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+	<script type="text/javascript" src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+	<script type="text/javascript" src="bower_components/angular-translate/angular-translate.min.js"></script>
+	<script type="text/javascript" src="bower_components/angular-translate-loader-url/angular-translate-loader-url.min.js"></script>
+	<script type="text/javascript" src="bower_components/angularUtils-pagination/dirPagination.js"></script>
+	<script type="text/javascript" src="bower_components/socket.io-client/socket.io.js"></script>
+	<script type="text/javascript" src="bower_components/angular-load/angular-load.min.js"></script>
+	<script type="text/javascript" src="bower_components/foundation-apps/dist/js/foundation-apps.min.js"></script>
+	<script type="text/javascript" src="bower_components/foundation-apps/dist/js/foundation-apps-templates.min.js"></script>
+	<script type="text/javascript" src="bower_components/hammerjs/hammer.min.js"></script>
+	<script type="text/javascript" src="bower_components/angular-hotkeys/build/hotkeys.min.js"></script>
+	<script type="text/javascript" src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+	
+
+	<script type="text/javascript" src="js/main.js"></script>
+
+</head>
+<body ng-class="{'no-select-text':noSelectText}">
+	<!-- MARCO DE APP -->
+	<div class="grid-frame vertical">
+		<!-- ENCABEZADO -->
+		<div class="grid-block shrink vertical" ui-view="header"></div>
+		<!-- CUERPO -->
+		<div class="grid-block" ui-view="content"></div>
+
+		<!-- MODALES -->
+		<div zf-modal="" id="products_options"><a zf-close="" class="close-button">×</a><div ng-include="'views/products/options.tpl.html'"></div></div>
+		<div zf-modal="" id="extras_edit"><a zf-close="" class="close-button">×</a><div ng-include="'views/products/extras_edit.tpl.html'"></div></div>	
+	</div>
+	<!-- NOTIFICACIONES -->
+	<zf-notification-set id="main-notifications" position="top-right"></zf-notification-set>
+</body>
+</html>

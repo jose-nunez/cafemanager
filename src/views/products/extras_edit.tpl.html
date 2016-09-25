@@ -1,0 +1,39 @@
+<div ng-controller="ExtraCtrl">
+
+<!-- LISTADO DE AGREGADOS -->
+		<strong>Agregados:</strong><br>
+		<label>
+			<input type="checkbox" ng-model="filterExtrasByProdut" /> Filtrar por producto
+		</label>
+		<button ng-click="extras.clearSelected()">Limpiar seleccion</button>
+		<div class="products-list clearfix">
+
+			<p ng-hide="filteredExtras.length">{{ "no extras" | translate }}</p>
+			
+			<div class="p-box-wrapper" current-page="extras_currentPage" pagination-id="extras_pagination" dir-paginate="extra in filteredExtras = (extras.collection | filterExtras:selectedProduct:filterExtrasByProdut )| orderBy:'name' | itemsPerPage: 20 " >
+			<div class="p-box" ng-class="extra.getClasses(extras.selected)" ng-dblclick="consoleamelo(extra)">
+				<div class="p-floater"><div class="p-inner-floater" ng-click="extras.setSelected(extra);">
+					<div class="p-desc">
+						<div class="p-img" style="background-image:url({{ baseImgUrl + extra.image }})"></div>
+						<span class="p-name">{{extra.name}}</span>
+					</div>
+					<div class="p-prices p-desc">
+					</div>
+				</div></div>
+			</div>
+			</div>
+		</div>
+		<dir-pagination-controls pagination-id="extras_pagination"></dir-pagination-controls>
+
+	<!-- MOODIFICADORES -->
+		<div class="products-categories">
+			<strong>Modificadores para: {{ selectedProduct.name }} & {{ selectedExtra.name }}</strong><br>
+			<ul>
+				<li ng-repeat="modifier in modifiers.collection">
+					<input type="checkbox" ng-model="modifier.active" />
+					<span>{{ modifier.name | translate }}</span>
+					<input type="text" ng-model="modifier.variation" />
+				</li>
+			</ul>
+		</div>
+</div>
