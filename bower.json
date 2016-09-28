@@ -16,6 +16,6 @@
     "foundation-apps": "1.2.0",
     "angular-load": "0.4.0",
     "angularUtils-pagination": "angular-utils-pagination#0.9.4",
-    "angular-hotkeys": "chieffancypants/angular-hotkeys#1.7.0",
+    "angular-hotkeys": "chieffancypants/angular-hotkeys#1.7.0"
   }
 }
