@@ -11,14 +11,14 @@
 		<div class="menu-group">
 			<div class="menu-group-left">
 			<ul class="menu-bar">
-				<li><a ui-sref=".tables" >Mesas</a></li>
-				<li><a>Precios</a></li>
-				<li><a ui-sref=".addOrder" >Agergar producto</a></li>
-				<li><a >Caja</a></li>
-				<li><a >Reservas</a></li>
-				<li><a >Cuentas</a></li>
-				<li class="hide-for-large"><a ui-sref=".addOrder.filters({filtersTab:'categories'})">Categorías</a></li>
-				<li class="hide-for-large"><a ui-sref=".addOrder.filters({filtersTab:'alphabet'})">A-Z</a></li>
+				<li><a ui-sref=".tables" >{{'tables'|translate}}</a></li>
+				<li><a>{{'prices'|translate}}</a></li>
+				<li><a ui-sref=".addOrder" >{{'addProduct'|translate}}</a></li>
+				<li><a >{{'counter'|translate}}</a></li>
+				<li><a >{{'bookings'|translate}}</a></li>
+				<li><a >{{'checks'|translate}}</a></li>
+				<li class="hide-for-large"><a ui-sref=".addOrder.filters({filtersTab:'categories'})">{{'categories'|translate}}</a></li>
+				<li class="hide-for-large"><a ui-sref=".addOrder.filters({filtersTab:'alphabet'})">{{'az'|translate}}</a></li>
 				<li class="hide-for-large"><a ui-sref=".addOrder.tableCount">$</a></li>
 			</ul>
 			</div>

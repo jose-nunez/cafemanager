@@ -10,6 +10,15 @@ app.config(['$translateProvider','$stateProvider','$urlRouterProvider',function(
 	// Translations
 	(function(){
 		$translateProvider.translations('es', {
+			//Main Menu
+			tables:'Mesas',
+			prices:'Precios',
+			addProduct:'Agregar producto',
+			counter:'Caja',
+			bookings:'Reservas',
+			checks:'Cuentas',
+			categories:'Categorías',
+			// az:'A-Z',
 			// Productos
 			Product: 'Producto',
 			Pack: 'Paquete',pack:'Paquete',
@@ -31,6 +40,15 @@ app.config(['$translateProvider','$stateProvider','$urlRouterProvider',function(
 			"without":"Sin",
 		});
 		$translateProvider.translations('en', {
+			//Main Menu
+			tables:'Tables',
+			prices:'Prices',
+			addProduct:'Add product',
+			counter:'Counter',
+			bookings:'Bookings',
+			checks:'Checks',
+			categories:'Categories',
+			az:'A-Z',
 			// Productos
 			Product: 'Product',
 			Pack: 'Pack',pack: 'Pack',

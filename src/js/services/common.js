@@ -7,7 +7,6 @@ Common Services
 angular.module('cafeManagerApp').factory('Config',['$q','$http',function($q,$http){
 
 	var SERVER_ADDR = 'http://localhost:3165/';
-	// var SERVER_ADDR = 'http://192.168.0.128:3165/';
 	// var SERVER_ADDR = 'http://104.237.137.132:3165/';
 	
 	// var CLIENT_PATH_FULL = process.cwd()+'\\app\\'; //SOLO para app, no web
