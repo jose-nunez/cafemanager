@@ -7,15 +7,12 @@ Common Services
 angular.module('cafeManagerApp').factory('Config',['$q','$http',function($q,$http){
 
 	var SERVER_ADDR = 'http://localhost:3165/';
-	// var SERVER_ADDR = 'http://104.237.137.132:3165/';
-	
-	// var CLIENT_PATH_FULL = process.cwd()+'\\app\\'; //SOLO para app, no web
+	// var SERVER_ADDR = 'http://cafemanager.josenunez.org/cmserver/';
 	var CLIENT_PATH_LOCAL = 'app/';
 
 	var update_config = function(loaded_config){
 		var default_config = {	
 			SERVER_ADDR: SERVER_ADDR,
-			// CLIENT_PATH_FULL: CLIENT_PATH_FULL,
 			CLIENT_PATH_LOCAL: CLIENT_PATH_LOCAL,
 
 			// REWRITABLE___________
@@ -48,8 +45,6 @@ angular.module('cafeManagerApp').factory('Config',['$q','$http',function($q,$htt
 	$http.get(SERVER_ADDR+'config').then(
 		function(response){
 			var config = update_config(response.data);
-
-			config.server = false; //OBVIO QUE NO ES SERVER
 			
 			deferred.resolve(config);
 		},
