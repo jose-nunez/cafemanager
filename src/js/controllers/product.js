@@ -4,10 +4,10 @@ Product controller
 *****************************************/
 'use strict';
 angular.module('cafeManagerApp').controller('ProductCtrl',[
-'$scope','DataLoader','Config','FoundationApi','focus','$state',
-function($scope,DataLoader,Config,foundationApi,focus,$state){
+'$scope','DataLoader','Config','FoundationApi','focus','$state','ClassDefinitions','ProductDataModels',
+function($scope,DataLoader,Config,foundationApi,focus,$state,CD,PDM){
 
-	log('Me estan creando CTM');
+	// log('Me estan creando CTM');
 
 	/* *********************************************************************************************************
 		SETTINGS
@@ -15,7 +15,7 @@ function($scope,DataLoader,Config,foundationApi,focus,$state){
 
 	$scope.baseImgUrl = 'img/';
 	$scope.filteredProducts;
-	
+
 	// $scope.extras_currentPage = 1;
 
 	$scope.paginationOptions ={};
@@ -34,12 +34,12 @@ function($scope,DataLoader,Config,foundationApi,focus,$state){
 		productQuantity: 1,
 	};
 
-	$scope.prices = new PricesDM();
-	$scope.categories = new CategoriesDM();
-	$scope.products = new ProductsDM($scope.productsOptions);
-	$scope.extras = new ExtrasDM();
-	$scope.modifiers = new CollectionDM();
-	$scope.modifier_extra_singles = new ModifierExtraSinglesDM();
+	$scope.prices = new PDM.PricesDM();
+	$scope.categories = new PDM.CategoriesDM();
+	$scope.products = new PDM.ProductsDM($scope.productsOptions);
+	$scope.extras = new PDM.ExtrasDM();
+	$scope.modifiers = new CD.CollectionDM();
+	$scope.modifier_extra_singles = new PDM.ModifierExtraSinglesDM();
 
 	
 	Config.then(function(config){
