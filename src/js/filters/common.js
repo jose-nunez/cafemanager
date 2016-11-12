@@ -2,7 +2,7 @@
 CAFE MANAGER
 General filters
 *****************************************/
-'use strict';
+(function(){'use strict';}());
 
 angular.module('cafeManagerApp').filter('numberFixedLen', function () {
 	return function (n, len) {

@@ -1,7 +1,7 @@
 /**************************************
 Definiciones de clases y herencia
 *****************************************/
-'use strict';
+(function(){'use strict';}());
 
 
 angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){

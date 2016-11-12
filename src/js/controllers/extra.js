@@ -2,7 +2,7 @@
 CAFE MANAGER
 Extra controller
 *****************************************/
-'use strict';
+(function(){'use strict';}());
 
 angular.module('cafeManagerApp').controller('ExtraCtrl',['$scope','Config',function($scope,Config){
 	

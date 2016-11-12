@@ -2,7 +2,7 @@
 CAFE MANAGER
 Main module
 *****************************************/
-'use strict';
+(function(){'use strict';}());
 
 var app = angular.module('cafeManagerApp',['angularUtils.directives.dirPagination','pascalprecht.translate','ngSanitize','angularLoad','foundation','ui.router','cfp.hotkeys']);
 

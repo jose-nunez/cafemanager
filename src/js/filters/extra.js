@@ -2,7 +2,7 @@
 CAFE MANAGER
 Extra filters
 *****************************************/
-'use strict';
+(function(){'use strict';}());
 
 // Filtra extras segun producto
 angular.module('cafeManagerApp').filter("filterExtras",function (){

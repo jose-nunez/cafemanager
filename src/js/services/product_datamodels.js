@@ -1,8 +1,8 @@
-/*
+/**************************************
 CAFE MANAGER
 Product Data Models
-*/
-'use strict';
+*****************************************/
+(function(){'use strict';}());
 
 angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions',function(CD){
 

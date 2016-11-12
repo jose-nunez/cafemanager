@@ -7,6 +7,9 @@ var autoprefixer = require('gulp-autoprefixer');
 var sass = require('gulp-sass');
 var cleanCSS = require('gulp-clean-css');
 
+var jshint = require('gulp-jshint');
+var jshintstylish = require('jshint-stylish');
+
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
@@ -29,7 +32,20 @@ var tasks = {
 
 /* JAVASCRIPT ____________________________________________________________________________*/
 var scripts_src = 'src/js/**';
+
+
+gulp.task('scripts_errors', function() {
+	gulp.src(scripts_src)
+		.pipe(jshint())
+		.pipe(jshint.reporter(jshintstylish));
+});
+
+// gulp.task('scripts_errors_w', function(){gulp.watch(scripts_src,['scripts_errors']);});
+// tasks.once.push('scripts_errors');
+// tasks.watch.push('scripts_errors_w');
+
 gulp.task('scripts', function() {
+	
 	var scripts = [
 		// lib_dir + 'angular/angular.min.js',
 		
@@ -70,7 +86,7 @@ gulp.task('scripts', function() {
 		src_dir + 'js/controllers/filter.js',
 		src_dir + 'js/controllers/extra.js',*/
 	];
-
+	
 	gulp.src(scripts)
 		.pipe(concat('main.js'))
 			.pipe(gulp.dest(build_dir+'js'))

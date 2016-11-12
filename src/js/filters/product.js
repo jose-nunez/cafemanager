@@ -2,7 +2,7 @@
 CAFE MANAGER
 Product filters
 *****************************************/
-'use strict';
+(function(){'use strict';}());
 
 // Filtra categorias padre para desplegar el arbol completo
 angular.module('cafeManagerApp').filter("childrenCategoryFilter",function (){
@@ -187,7 +187,7 @@ angular.module('cafeManagerApp').filter("updateSelected",function (){
 	return function(productsArr,products,refreshSelection){
 		// log('Actualizando seleccion de productos');
 		// var selectedProducts = products.selected;
-		if(refreshSelection) products.updateSelected(productsArr);
+		if(products && refreshSelection) products.updateSelected(productsArr);
 		return productsArr;
 	}
 });

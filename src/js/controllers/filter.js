@@ -2,7 +2,8 @@
 CAFE MANAGER
 Filter Product controller
 *****************************************/
-'use strict';
+(function(){'use strict';}());
+
 angular.module('cafeManagerApp').controller('FilterCtrl',[
 '$scope','$state','$stateParams',
 function($scope,$state,$stateParams){

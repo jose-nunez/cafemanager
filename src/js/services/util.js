@@ -2,7 +2,7 @@
 CAFE MANAGER
 Util services
 *****************************************/
-'use strict';
+(function(){'use strict';}());
 
 angular.module('cafeManagerApp').factory('focus',['$timeout', '$window',function($timeout, $window) {
 	return function(id,selectAll) {

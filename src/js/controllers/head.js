@@ -2,7 +2,7 @@
 CAFE MANAGER
 Head controller
 *****************************************/
-'use strict';
+(function(){'use strict';}());
 
 angular.module('cafeManagerApp').controller('HeadCtrl',['$scope',function($scope){
 	$scope.windowTitle = 'El Barista | Cafe Manager';

@@ -2,7 +2,7 @@
 CAFE MANAGER
 Head controller
 *****************************************/
-'use strict';
+(function(){'use strict';}());
 
 angular.module('cafeManagerApp').controller('MainCtrl',
 	['$scope','$translate','angularLoad','Config','hotkeys','focus','selectAll',/*'matchMediaQuery',*/'$state',
