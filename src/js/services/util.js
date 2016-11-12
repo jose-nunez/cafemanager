@@ -4,7 +4,7 @@ Util services
 *****************************************/
 'use strict';
 
-angular.module('cafeManagerApp').factory('focus', function($timeout, $window) {
+angular.module('cafeManagerApp').factory('focus',['$timeout', '$window',function($timeout, $window) {
 	return function(id,selectAll) {
 	  // timeout makes sure that it is invoked after any other event has been triggered.
 	  // e.g. click events that need to run before the focus or
@@ -17,9 +17,9 @@ angular.module('cafeManagerApp').factory('focus', function($timeout, $window) {
 			if(selectAll) element.select();
 	  });
 	};
-});
+}]);
 
-angular.module('cafeManagerApp').factory('selectAll', function($timeout, $window) {
+angular.module('cafeManagerApp').factory('selectAll',['$timeout', '$window',function($timeout, $window) {
 	return function(id) {
 	  // timeout makes sure that it is invoked after any other event has been triggered.
 	  // e.g. click events that need to run before the focus or
@@ -31,7 +31,7 @@ angular.module('cafeManagerApp').factory('selectAll', function($timeout, $window
 			element.select();
 	  });
 	};
-});
+}]);
 
 angular.module('cafeManagerApp').factory('matchMediaQuery',['FoundationApi',function(foundationApi) {
 	var match_up = function(size_name){
