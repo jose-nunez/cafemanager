@@ -34,15 +34,11 @@ var tasks = {
 var scripts_src = 'src/js/**';
 
 
-gulp.task('scripts_errors', function() {
+gulp.task('jserrors', function() {
 	gulp.src(scripts_src)
 		.pipe(jshint())
 		.pipe(jshint.reporter(jshintstylish));
 });
-
-// gulp.task('scripts_errors_w', function(){gulp.watch(scripts_src,['scripts_errors']);});
-// tasks.once.push('scripts_errors');
-// tasks.watch.push('scripts_errors_w');
 
 gulp.task('scripts', function() {
 	
