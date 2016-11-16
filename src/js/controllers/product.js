@@ -74,6 +74,7 @@ function($scope,DataLoader,Config,foundationApi,focus,$state,PDL){
 		if(config.debug){
 			window.scope_product = $scope;
 			$scope.DataLoader = DataLoader;//!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			$scope.PDL = PDL;//!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		}
 
 	}
@@ -263,7 +264,7 @@ function($scope,DataLoader,Config,foundationApi,focus,$state,PDL){
 	********************************************************************************************************* */
 	PDL.then(function(data){
 
-		console.log('Llego toda la wea!');
+		log('ProductCtrl: Actualizando vista');
 
 		$scope.productsOptions = data.productsOptions;
 

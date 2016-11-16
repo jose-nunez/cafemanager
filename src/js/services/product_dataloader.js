@@ -24,7 +24,6 @@ angular.module('cafeManagerApp').factory('ProductDataLoader',['$q','DataLoader',
 	var modifiers = new CD.CollectionDM();
 	var modifier_extra_singles = new PDM.ModifierExtraSinglesDM();
 
-
 	var loadingProducts = $q.defer();
 
 	var refreshContents = function(data,dontSave){
@@ -103,7 +102,14 @@ angular.module('cafeManagerApp').factory('ProductDataLoader',['$q','DataLoader',
 
 	// INICIA CARGA DE DATOS
 	// DataLoader.get('all').then(refreshContents);
-	DataLoader.get('all_product').then(refreshContents);
+	// DataLoader.get('all_product').then(refreshContents);
+	
+	// List of get types. 
+	// Gives the list or an element of this at the moment to subscribe to the data loader.
+	// Must match with Server names.
+	var groupType = 'all_product';
+	var getTypes = ['singles','packs','categories','prices','extras','modifiers','modifier_extra_singles'];
+	DataLoader.suscribe(groupType,getTypes,refreshContents);
 	
 	return loadingProducts.promise;
 
