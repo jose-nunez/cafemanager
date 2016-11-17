@@ -78,7 +78,7 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 		},
 		normalize_unit_multi: function(sources_names,source_collection,dest_name){
 			var temp,new_collection,source_ids;
-			new_collection = Object.create(source_collection);
+			new_collection = Object.create(source_collection); //CORREGIR!!!!!!!!!!!!!!!!!!!!!
 			for (var type in sources_names){
 				source_ids = sources_names[type];
 				new_collection.linkElements(this[source_ids],type,source_collection);
@@ -86,15 +86,25 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 			}
 			this[dest_name] = new_collection;
 		},
-		/*reLinkReferenced: function(collection,mytype,isNotCollection){
-			var go;
-			if(isNotCollection) go = function(obj,refname,me){ obj[refname] = this; };
-			else go = function(obj,refname,me){ obj[refname].addElement(this); };
-			
-			for(var i=0;i<collection.collection.length;i++){
-				go(collection.collection[i],mytype);
+		reLinkReferenced: function(mytype,referenced){
+			if(typeof referenced == 'string') referenced = [referenced];
+			var referenced_i;
+			for(var i in referenced){
+				referenced_i = this[referenced[i]];
+				
+				if(referenced_i instanceof CollectionDM) 
+				for(var j in referenced_i.collection){
+					if(referenced_i.collection[j].relink) referenced_i.collection[j].reLink(mytype,this);
+				}
+				else if(referenced_i.relink) referenced_i.reLink(mytype,this);
 			}
-		},*/
+		},
+		reLink: function(dest,newObj){
+			if(this.dest instanceof CollectionDM){
+				this.dest.addElement(newObj);
+			}
+			else if(this.dest) this.dest = newObj;
+		},
 	});
 
 	var CollectionDM = newClass({

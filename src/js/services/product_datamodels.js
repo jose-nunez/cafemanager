@@ -33,6 +33,19 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 
 			return my_clone;
 		},
+		reLinkReferenced: function(){
+			this.superCall(CD.CollectionableDM,'reLinkReferenced',
+				// No se sabe si los que yo referencio me referencian. Pero los mando igual y ellos verán
+				['modifier_extra_single',['single','extra','modifier']]);
+		},
+		reLink: function(type,newObj){
+			switch (type){
+				case 'single':if(this.single) this.single = newObj; break;
+				case 'extra':if(this.extra) this.extra = newObj; break;
+				case 'modifier':if(this.modifier) this.modifier = newObj; break;
+				default:;
+			}
+		},
 	},CD.CollectionableDM);
 
 	/* ModifierExtraSingles *********************/
@@ -81,6 +94,18 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 
 			return my_clone;
 		},
+		reLinkReferenced: function(){
+			this.superCall(CD.CollectionableDM,'reLinkReferenced',
+				// No se sabe si los que yo referencio me referencian. Pero los mando igual y ellos verán
+				['price',['single','pack']]);
+		},
+		reLink: function(type,newObj){
+			switch (type){
+				case 'single':if(this.single) this.single = newObj; break;
+				case 'pack':if(this.pack) this.pack = newObj; break;
+				default:;
+			}
+		},
 		isSelectable: function(productType){
 			return !(productType=='pack' && this.type==4);
 		},
@@ -123,6 +148,18 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 			if(my_clone.products) my_clone.singles = my_clone.products.getIds('single');
 			delete(my_clone.products);
 			return my_clone;
+		},
+		reLinkReferenced: function(){
+			this.superCall(CD.CollectionableDM,'reLinkReferenced',
+				// No se sabe si los que yo referencio me referencian. Pero los mando igual y ellos verán
+				['price',['single','pack']]);
+		},
+		reLink: function(type,newObj){
+			switch (type){
+				case 'single':if(this.single) this.single = newObj; break;
+				case 'pack':if(this.pack) this.pack = newObj; break;
+				default:;
+			}
 		},
 	},CD.CollectionableDM);
 
@@ -183,7 +220,6 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 		init: function(data){
 			if(data){
 				this.superCall(CD.CollectionableDM,'init',[data]);
-
 				this.status = {priceable: true,selectable: true,expanded:false,overed:false,};
 			}
 		},
@@ -244,10 +280,22 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 			
 			return my_clone;
 		},
-		/*reLinkReferenced: function(){
-			if(this.packs) this.superCall(CD.CollectionableDM,'reLinkReferenced',[this.packs,'singles']);
-			if(this.modifier_extra_singles) this.superCall(CD.CollectionableDM,'reLinkReferenced',[this.modifier_extra_singles,'single',true]);
-		},*/
+		reLinkReferenced: function(){
+			this.superCall(CD.CollectionableDM,'reLinkReferenced',
+				// No se sabe si los que yo referencio me referencian. Pero los mando igual y ellos verán
+				['single',['categories','prices','extras','modifier_extra_singles','modifiers','packs']]);
+		},
+		reLink: function(type,newObj){
+			switch (type){
+				case 'category':if(this.categories) this.categories.addElement(newObj); break;
+				case 'price':if(this.prices) this.prices.addElement(newObj); break;
+				case 'pack':if(this.packs) this.packs.addElement(newObj); break;
+				case 'extra':if(this.extras) this.extras.addElement(newObj); break;
+				case 'modifier':if(this.modifiers) this.modifiers.addElement(newObj); break;
+				case 'modifier_extra_single':if(this.modifier_extra_singles) this.modifier_extra_singles.addElement(newObj); break;
+				default:;
+			}
+		},
 	},CD.CollectionableDM);
 
 
