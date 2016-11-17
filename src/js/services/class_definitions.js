@@ -12,7 +12,8 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 	function extendPrototype(childPrototype,parentPrototype){
 		childPrototype.superCall = function(parentClass,method,args){
 			if(parentClass.prototype[method]){
-				return parentClass.prototype[method].call(this,args);
+				// return parentClass.prototype[method].call(this,args);
+				return parentClass.prototype[method].apply(this,args);
 				
 			}
 		}
@@ -84,8 +85,16 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 				delete(this[source_ids]);
 			}
 			this[dest_name] = new_collection;
-
 		},
+		/*reLinkReferenced: function(collection,mytype,isNotCollection){
+			var go;
+			if(isNotCollection) go = function(obj,refname,me){ obj[refname] = this; };
+			else go = function(obj,refname,me){ obj[refname].addElement(this); };
+			
+			for(var i=0;i<collection.collection.length;i++){
+				go(collection.collection[i],mytype);
+			}
+		},*/
 	});
 
 	var CollectionDM = newClass({
@@ -96,16 +105,20 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 			this.addElements(JSON_data);
 		},
 		addElements: function(JSON_data){
+			var replaced = [];
 			if(JSON_data){
 				var data;
 				if(typeof JSON_data=="string") data = JSON.parse(JSON_data);
 				else data = JSON_data;
-
+				var element_replaces;
 				for(var i in data){
-					this.addElement(data[i]);
+					element_replaces = this.addElement(data[i]);
+					if(element_replaces instanceof this.__elemClass__) replaced.push(element_replaces);
 				}
 			}
+			return replaced;
 		},
+		// Returns the new object if it has replaced a previous one
 		addElement: function(data){
 			var element,pos;
 			if(data instanceof this.__elemClass__) element = data;
@@ -117,12 +130,12 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 			if(this.index[element.id]!=undefined){ //OJO CON LA POSICIÓN CERO!!!!
 				pos = this.index[element.id];
 				this.collection[pos] = element;
+				return element;
 			}
 			else{
 				pos = this.collection.push(element) - 1;
 				this.index[element.id] = pos;
 			}
-
 		},
 		linkElements: function(ids,source,source_type){
 			if(source_type){ for(var i in ids){
@@ -176,7 +189,7 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 	var MultiIdCollectionDM = newClass({
 		__elemClass__: CollectionableDM,
 		init: function(JSON_data){
-			this.superCall(CollectionDM,'init',JSON_data);
+			this.superCall(CollectionDM,'init',[JSON_data]);
 		},
 		getId: function(ids){
 			var result='';
@@ -213,15 +226,18 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 			this.addElements(JSON_data);
 		},
 		addElements: function(type,JSON_data){
+			var replaced = [];
 			if(JSON_data){
 				var data;
 				if(typeof JSON_data=="string") data = JSON.parse(JSON_data);
 				else data = JSON_data;
-
+				var element_replaces;
 				for(var i in data){
-					this.addElement(type,data[i]);
+					element_replaces = this.addElement(type,data[i]);
+					if(element_replaces instanceof this.__elemClass__[type]) replaced.push(element_replaces);
 				}
 			}
+			return replaced;
 		},
 		addElement: function(type,data){
 			var type = type || data.type;
@@ -237,6 +253,7 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 			if(this.index[element.type][element.id]!=undefined){ //OJO CON LA POSICIÓN CERO!!!!
 				pos = this.index[element.type][element.id];
 				this.collection[pos] = element;
+				return element;
 			}
 			else{
 				pos = this.collection.push(element) - 1;

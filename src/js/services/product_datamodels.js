@@ -9,7 +9,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 	/* ModifierExtraSingle *********************/
 	var ModifierExtraSingleDM = CD.newClass({
 		init: function(data){		
-			this.superCall(CD.CollectionableDM,'init',data);
+			this.superCall(CD.CollectionableDM,'init',[data]);
 		},
 		preNormalize: function(sources){
 			this.single = sources.products.get('single',this.single_id);
@@ -39,7 +39,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 	var ModifierExtraSinglesDM = CD.newClass({
 		__elemClass__:ModifierExtraSingleDM,
 		init: function(data){
-			this.superCall(CD.CollectionDM,'init',data);
+			this.superCall(CD.CollectionDM,'init',[data]);
 		},
 	},CD.CollectionDM);
 
@@ -47,7 +47,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 	/* PRECIO *********************/
 	var PriceDM = CD.newClass({
 		init: function(data){
-			this.superCall(CD.CollectionableDM,'init',data);
+			this.superCall(CD.CollectionableDM,'init',[data]);
 			/*active,amount,created,deleted,description,id,name,pack_id,priority,single_id,type,units,updated,validity_end,validity_start*/
 			//type -> 1:Costo|2:Venta|3:Oferta|4:Paquete|5:Personalizado(en el momento)
 		},
@@ -91,7 +91,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 	var PricesDM = CD.newClass({
 		__elemClass__: PriceDM,
 		init: function(data){
-			this.superCall(CD.CollectionDM,'init',data);
+			this.superCall(CD.CollectionDM,'init',[data]);
 		},
 	},CD.CollectionDM);
 
@@ -99,7 +99,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 	/* CATEGORIA *********************/
 	var CategoryDM = CD.newClass({
 		init: function(data){
-			this.superCall(CD.CollectionableDM,'init',data);
+			this.superCall(CD.CollectionableDM,'init',[data]);
 			// id-> 1:all|2:sale|3:nocat|4:packs|5:nostock|6:disabled
 			/*children,created,id,name,packs,parent,priority,singles,updated*/
 		},
@@ -131,7 +131,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 	var CategoriesDM = CD.newClass({
 		__elemClass__: CategoryDM,
 		init: function(data){
-			this.superCall(CD.CollectionDM,'init',data);
+			this.superCall(CD.CollectionDM,'init',[data]);
 
 			this.setSelected();
 			this.specialIds = this.getSpecialIds();
@@ -149,7 +149,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 	/* EXTRA *********************/
 	var ExtraDM = CD.newClass({
 		init: function(data){
-			this.superCall(CD.CollectionableDM,'init',data);
+			this.superCall(CD.CollectionableDM,'init',[data]);
 		},
 		getClasses: function(selected){
 			return {selected: selected==this};
@@ -160,7 +160,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 	var ExtrasDM = CD.newClass({
 		__elemClass__: ExtraDM,
 		init: function(data){
-			this.superCall(CD.CollectionDM,'init',data);
+			this.superCall(CD.CollectionDM,'init',[data]);
 			this.setSelected();
 		},
 		setSelected: function(extra){
@@ -182,7 +182,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 	var SingleDM = CD.newClass({
 		init: function(data){
 			if(data){
-				this.superCall(CD.CollectionableDM,'init',data);
+				this.superCall(CD.CollectionableDM,'init',[data]);
 
 				this.status = {priceable: true,selectable: true,expanded:false,overed:false,};
 			}
@@ -244,13 +244,17 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 			
 			return my_clone;
 		},
+		/*reLinkReferenced: function(){
+			if(this.packs) this.superCall(CD.CollectionableDM,'reLinkReferenced',[this.packs,'singles']);
+			if(this.modifier_extra_singles) this.superCall(CD.CollectionableDM,'reLinkReferenced',[this.modifier_extra_singles,'single',true]);
+		},*/
 	},CD.CollectionableDM);
 
 
 	/* PAQUETE *********************/
 	var PackDM = CD.newClass({
 		init: function(data){
-			this.superCall(SingleDM,'init',data);
+			this.superCall(SingleDM,'init',[data]);
 		},
 		getImg: function(){
 			var result = [];
@@ -263,7 +267,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 			return this.enabled;
 		},
 		preNormalize: function(sources){
-			this.superCall(SingleDM,'preNormalize',sources);
+			this.superCall(SingleDM,'preNormalize',[sources]);
 			this.updatePackPrice();
 			this.normalize({sources_names:'singles',type:'single',source_collection:sources.products});
 			this.updatePackStock();

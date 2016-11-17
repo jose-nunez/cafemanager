@@ -30,34 +30,45 @@ angular.module('cafeManagerApp').factory('ProductDataLoader',['$q','DataLoader',
 		log('ProductDataLoader: Procesando los datos');
 
 		// if(!dontSave) DataCache.update(data);
-
-		if(data.singles) products.addElements('single',data.singles);
-		if(data.packs) products.addElements('pack',data.packs);
-		if(data.categories) categories.addElements(data.categories);
-		if(data.prices) prices.addElements(data.prices);
-		if(data.extras) extras.addElements(data.extras);
-		if(data.modifiers) modifiers.addElements(data.modifiers);
-		if(data.modifier_extra_singles) modifier_extra_singles.addElements(data.modifier_extra_singles);
+		var singles_r,packs_r,categories_r,prices_r,extras_r,modifiers_r,modifier_extra_singles_r;
+		
+		if(data.singles) singles_r = products.addElements('single',data.singles);
+		if(data.packs) packs_r = products.addElements('pack',data.packs);
+		if(data.categories) categories_r = categories.addElements(data.categories);
+		if(data.prices) prices_r = prices.addElements(data.prices);
+		if(data.extras) extras_r = extras.addElements(data.extras);
+		if(data.modifiers) modifiers_r = modifiers.addElements(data.modifiers);
+		if(data.modifier_extra_singles) modifier_extra_singles_r = modifier_extra_singles.addElements(data.modifier_extra_singles);
 
 		
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		//SUPER CUCHUFLETA RECULIAAA. Por el momento sólo se usa en filtro por palabras clave
 		var cuchufleta_ql = function(singles){ 
+			log('Cuchufleteando singles');
 			for(var i in singles){ 
-				var single,pivot; 
+				var single,pivot;
 				single = products.get('single',singles[i].id); 
 
 				single.packs = [];
 				for(var j in single.prices){ 
-					pivot = prices.get(single.prices[j].id); if(pivot.type == 4) single.packs.push({id:pivot.pack_id}); 
+					pivot = prices.get(single.prices[j].id); 
+					if(pivot.type == 4){
+						// PUEDE QUE YA ESTÉ NORMALIZADO
+						if(pivot.pack_id) single.packs.push({id:pivot.pack_id}); 
+						else single.packs.push({id:pivot.pack.id}); 
+					}
 				}
 
 				single.extras = [];
 				single.modifiers = [];
 				for(var j in single.modifier_extra_singles){
 					pivot = modifier_extra_singles.get(single.modifier_extra_singles[j].id);
-					single.extras.push({id:pivot.extra_id});
-					single.modifiers.push({id:pivot.modifier_id});
+					
+					if(pivot.extra_id) single.extras.push({id:pivot.extra_id});
+					else single.extras.push({id:pivot.extra.id});
+
+					if(pivot.modifier_id) single.modifiers.push({id:pivot.modifier_id});
+					else single.modifiers.push({id:pivot.modifier.id});
 				}
 			 }
 		}
@@ -66,6 +77,7 @@ angular.module('cafeManagerApp').factory('ProductDataLoader',['$q','DataLoader',
 
 		// NORMALIZAR
 		// COnvierte ID's por links a objetos
+		// Al normalizar, si un objeto es reemplazado, se DEBE actualizar las referencias a este.
 		var sources = {
 			products:products,
 			categories:categories,
