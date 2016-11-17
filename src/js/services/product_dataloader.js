@@ -19,7 +19,7 @@ angular.module('cafeManagerApp').factory('ProductDataLoader',['$q','DataLoader',
 
 	var prices = new PDM.PricesDM();
 	var categories = new PDM.CategoriesDM();
-	var products = new PDM.ProductsDM(productsOptions);
+	var products = new PDM.ProductsDM({options:productsOptions});
 	var extras = new PDM.ExtrasDM();
 	var modifiers = new CD.CollectionDM();
 	var modifier_extra_singles = new PDM.ModifierExtraSinglesDM();

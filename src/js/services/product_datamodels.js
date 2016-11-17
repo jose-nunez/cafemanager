@@ -51,7 +51,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 
 	/* ModifierExtraSingles *********************/
 	var ModifierExtraSinglesDM = CD.newClass(
-		function(data){
+		function(data,JSON_data){
 			CD.CollectionDM.apply(this,arguments);
 		},{
 			__elemClass__:ModifierExtraSingleDM,
@@ -117,7 +117,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 
 	/* COLECCION DE PRECIOS *********************/
 	var PricesDM = CD.newClass(
-		function(data){
+		function(data,JSON_data){
 			CD.CollectionDM.apply(this,arguments);
 		},{
 			__elemClass__: PriceDM,
@@ -171,7 +171,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 
 	/* COLECCION DE CATEGORÍAS *********************/
 	var CategoriesDM = CD.newClass(
-		function(data){
+		function(data,JSON_data){
 			CD.CollectionDM.apply(this,arguments);
 
 			this.setSelected();
@@ -202,7 +202,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 
 	/* COLECCION DE EXTRAS *********************/
 	var ExtrasDM = CD.newClass(
-		function(data){
+		function(data,JSON_data){
 			CD.CollectionDM.apply(this,arguments);
 			this.setSelected();
 		},{
@@ -360,10 +360,8 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 
 	/* COLECCION DE PRODUCTOS *********************/
 	var ProductsDM = CD.newClass(
-		function(options){
+		function(data,JSON_data){
 			CD.MultiCollectionDM.apply(this,arguments);
-
-			this.options = options;
 			this.clearSelected();
 		},{
 			__elemClass__: {single:SingleDM,pack:PackDM},

@@ -54,7 +54,7 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 					this.normalize_unit_multi(map.sources_names,map.source_collection,map.dest_name);
 			},
 			normalize_data_unit: function(source_name,dest_class,dest_name){
-				var temp,new_collection;
+				var new_collection;
 				if(!dest_name) dest_name = source_name;
 				new_collection = dest_class? new dest_class() : new CollectionDM();
 				new_collection.addElements(this[source_name]);
@@ -62,19 +62,20 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 				if(dest_name!=source_name) delete(this[source_name]);
 			},
 			normalize_unit: function(source_name,source_collection,dest_name,type,dest_class){
-				var temp,new_collection;
+				var new_collection;
 				if(!dest_name) dest_name = source_name;
 				new_collection = dest_class? new dest_class() : new CollectionDM(); 
 				new_collection.linkElements(this[source_name],source_collection,type);
 				this[dest_name] = new_collection;
 				if(dest_name!=source_name) delete(this[source_name]);
 			},
-			normalize_unit_multi: function(sources_names,source_collection,dest_name){
-				var temp,new_collection,source_ids;
-				new_collection = Object.create(source_collection); //CORREGIR!!!!!!!!!!!!!!!!!!!!!
+			normalize_unit_multi: function(sources_names,source_collection,dest_name,dest_class){
+				var new_collection,source_ids;
+				new_collection = dest_class? new dest_class() : new MultiCollectionDM({__elemClass__:source_collection.__elemClass__});
+
 				for (var type in sources_names){
 					source_ids = sources_names[type];
-					new_collection.linkElements(this[source_ids],type,source_collection);
+					new_collection.linkElements(this[source_ids],source_collection,type);
 					delete(this[source_ids]);
 				}
 				this[dest_name] = new_collection;
@@ -102,7 +103,10 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 	);
 
 	var CollectionDM = newClass(
-		function(JSON_data){
+		function(data,JSON_data){
+			for(var key in data){
+				this[key] = data[key];
+			}
 			this.collection = [];
 			this.index = {};
 			this.addElements(JSON_data);
@@ -192,8 +196,8 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 
 	//PARA IDs COMPUESTOS!!!!!!!!!
 	var MultiIdCollectionDM = newClass(
-		function(JSON_data){
-			this.superCall(CollectionDM,'init',[JSON_data]);
+		function(data,JSON_data){
+			CollectionDM.call(this,arguments);
 		},{
 			__elemClass__: CollectionableDM,
 			getId: function(ids){
@@ -222,7 +226,11 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 
 
 	var MultiCollectionDM = newClass(
-		function(JSON_data){
+		function(data,JSON_data){
+			for(var key in data){
+				this[key] = data[key];
+			}
+
 			this.collection = [];
 			this.index = {};
 			for(var type in this.__elemClass__){
@@ -266,7 +274,7 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 					this.index[element.type][element.id] = pos;
 				}
 			},
-			linkElements: function(ids,type,source,source_type){
+			linkElements: function(ids,source,type,source_type){
 				if(source_type || source instanceof MultiCollectionDM){
 					if(!source_type) source_type = type;
 					for(var i in ids){
