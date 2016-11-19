@@ -30,15 +30,15 @@ angular.module('cafeManagerApp').factory('ProductDataLoader',['$q','DataLoader',
 		log('ProductDataLoader: Procesando los datos');
 
 		// if(!dontSave) DataCache.update(data);
-		var singles_r,packs_r,categories_r,prices_r,extras_r,modifiers_r,modifier_extra_singles_r;
+		var updated = [];
 		
-		if(data.singles) singles_r = products.addElements('single',data.singles);
-		if(data.packs) packs_r = products.addElements('pack',data.packs);
-		if(data.categories) categories_r = categories.addElements(data.categories);
-		if(data.prices) prices_r = prices.addElements(data.prices);
-		if(data.extras) extras_r = extras.addElements(data.extras);
-		if(data.modifiers) modifiers_r = modifiers.addElements(data.modifiers);
-		if(data.modifier_extra_singles) modifier_extra_singles_r = modifier_extra_singles.addElements(data.modifier_extra_singles);
+		if(data.singles) updated = updated.concat(products.addElements('single',data.singles));
+		if(data.packs) updated = updated.concat(products.addElements('pack',data.packs));
+		if(data.categories) updated = updated.concat(categories.addElements(data.categories));
+		if(data.prices) updated = updated.concat(prices.addElements(data.prices));
+		if(data.extras) updated = updated.concat(extras.addElements(data.extras));
+		if(data.modifiers) updated = updated.concat(modifiers.addElements(data.modifiers));
+		if(data.modifier_extra_singles) updated = updated.concat(modifier_extra_singles.addElements(data.modifier_extra_singles));
 
 		
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -92,6 +92,11 @@ angular.module('cafeManagerApp').factory('ProductDataLoader',['$q','DataLoader',
 		if(data.singles) products.normalize(sources,'single',data.singles);
 		if(data.packs) products.normalize(sources,'pack',data.packs);
 		if(data.modifier_extra_singles) modifier_extra_singles.normalize(sources,data.modifier_extra_singles);
+		
+		// Actualizar links despues de normalizar
+		updated.forEach(function(element){
+			if(element.reLinkReferenced) element.reLinkReferenced();
+		});
 
 
 		var resp = {

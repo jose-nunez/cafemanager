@@ -40,9 +40,10 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 			},
 			reLink: function(type,newObj){
 				switch (type){
-					case 'single':if(this.single) this.single = newObj; break;
-					case 'extra':if(this.extra) this.extra = newObj; break;
-					case 'modifier':if(this.modifier) this.modifier = newObj; break;
+					case 'single':
+					case 'extra':
+					case 'modifier':
+						this[type] = newObj; break;
 					default:;
 				}
 			},
@@ -103,8 +104,10 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 			},
 			reLink: function(type,newObj){
 				switch (type){
-					case 'single':if(this.single) this.single = newObj; break;
-					case 'pack':if(this.pack) this.pack = newObj; break;
+					case 'single': 
+					case 'pack':
+						this[type] = newObj;
+						break;
 					default:;
 				}
 			},
@@ -154,14 +157,22 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				return my_clone;
 			},
 			reLinkReferenced: function(){
+				// No se sabe si los que yo referencio me referencian. Pero los mando igual y ellos verán
 				CD.CollectionableDM.prototype.reLinkReferenced.call(this,
-					// No se sabe si los que yo referencio me referencian. Pero los mando igual y ellos verán
-					'price',['single','pack']);
+					'category',['products']);
+				CD.CollectionableDM.prototype.reLinkReferenced.call(this,
+					'parent','children');
+				CD.CollectionableDM.prototype.reLinkReferenced.call(this,
+					'child','parent');
 			},
 			reLink: function(type,newObj){
 				switch (type){
-					case 'single':if(this.single) this.single = newObj; break;
-					case 'pack':if(this.pack) this.pack = newObj; break;
+					case 'parent': this.parent = newObj; break;
+					case 'child': if(this.children) this.children.addElement(newObj); break;
+					case 'single':
+					case 'pack':
+						if(this.products) this.products.addElement(type,newObj);
+						break;
 					default:;
 				}
 			},
@@ -335,6 +346,19 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				if(my_clone.singles) my_clone.singles = my_clone.singles.getIds(); 
 				
 				return my_clone;
+			},
+			reLinkReferenced: function(){
+				CD.CollectionableDM.prototype.reLinkReferenced.call(this,
+					// No se sabe si los que yo referencio me referencian. Pero los mando igual y ellos verán
+					'pack',['categories','prices','singles']);
+			},
+			reLink: function(type,newObj){
+				switch (type){
+					case 'category':if(this.categories) this.categories.addElement(newObj); break;
+					case 'price':if(this.prices) this.prices.addElement(newObj); break;
+					case 'single':if(this.singles) this.singles.addElement(newObj); break;
+					default:;
+				}
 			},
 			updatePackPrice: function(){ //LLAMAR DESPUES DE NORMALIZAR!
 				var amount = 0;

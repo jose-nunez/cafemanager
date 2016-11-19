@@ -88,7 +88,7 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 					
 					if(referenced_i instanceof CollectionDM) 
 					for(var j in referenced_i.collection){
-						if(referenced_i.collection[j].relink) referenced_i.collection[j].reLink(mytype,this);
+						if(referenced_i.collection[j].reLink) referenced_i.collection[j].reLink(mytype,this);
 					}
 					else if(referenced_i.relink) referenced_i.reLink(mytype,this);
 				}
@@ -152,6 +152,11 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 				else{ for(var i in ids){
 					this.addElement(source.get(ids[i].id));
 				}}
+			},
+			reLinkReferenced: function(ids){
+				for(var i in ids){
+					this.get(ids[i]).reLinkReferenced();
+				}
 			},
 			get: function(ids){
 				if(!ids) return undefined;
@@ -285,6 +290,11 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 					for(var i in ids){
 						this.addElement(type,source.get(ids[i].id));
 					}
+				}
+			},
+			reLinkReferenced: function(type,ids){
+				for(var i in ids){
+					this.get(type,ids[i]).reLinkReferenced();
 				}
 			},
 			get: function(type,ids){
