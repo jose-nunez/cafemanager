@@ -14,12 +14,10 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 		return Object.create(parentPrototype,childPrototype);
 	}
 
-	function newClass(constructor,newPrototype,parentClass){
-		var obj = constructor;
-		if(!parentClass) obj.prototype = newPrototype;
-		else obj.prototype = extendPrototype(newPrototype,parentClass.prototype);
-		obj.prototype.constructor = obj;
-		return obj;
+	function createPrototype(constructor,newPrototype,parentClass){
+		if(!parentClass) constructor.prototype = newPrototype;
+		else constructor.prototype = extendPrototype(newPrototype,parentClass.prototype);
+		constructor.prototype.constructor = constructor;
 	}
 
 	function clone(obj,flat){
@@ -34,18 +32,18 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 
 	/* GRAL CLASSES *********************/
 
-	var CollectionableDM = newClass(
-		function(data){
+	var Collectionable = function(data){
 			for(var key in data){
 				this[key] = data[key];
 			}
-		},
+		};
+	createPrototype(Collectionable,
 		{
 			preNormalize: function(){
 				// NADA POR ACA
 			},
 			normalize: function(map){
-				var isMulti = map.source_collection instanceof MultiCollectionDM;
+				var isMulti = map.source_collection instanceof MultiCollection;
 				if(!map.source_collection)
 					this.normalize_data_unit(map.sources_names,map.dest_class,map.dest_name);
 				else if(typeof map.sources_names == 'string')
@@ -56,7 +54,7 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 			normalize_data_unit: function(source_name,dest_class,dest_name){
 				var new_collection;
 				if(!dest_name) dest_name = source_name;
-				new_collection = dest_class? new dest_class() : new CollectionDM();
+				new_collection = dest_class? new dest_class() : new Collection();
 				new_collection.addElements(this[source_name]);
 				this[dest_name] = new_collection;
 				if(dest_name!=source_name) delete(this[source_name]);
@@ -64,14 +62,14 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 			normalize_unit: function(source_name,source_collection,dest_name,type,dest_class){
 				var new_collection;
 				if(!dest_name) dest_name = source_name;
-				new_collection = dest_class? new dest_class() : new CollectionDM(); 
+				new_collection = dest_class? new dest_class() : new Collection(); 
 				new_collection.linkElements(this[source_name],source_collection,type);
 				this[dest_name] = new_collection;
 				if(dest_name!=source_name) delete(this[source_name]);
 			},
 			normalize_unit_multi: function(sources_names,source_collection,dest_name,dest_class){
 				var new_collection,source_ids;
-				new_collection = dest_class? new dest_class() : new MultiCollectionDM({__elemClass__:source_collection.__elemClass__});
+				new_collection = dest_class? new dest_class() : new MultiCollection({__elemClass__:source_collection.__elemClass__});
 
 				for (var type in sources_names){
 					source_ids = sources_names[type];
@@ -86,7 +84,7 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 				for(var i in referenced){
 					referenced_i = this[referenced[i]];
 					
-					if(referenced_i instanceof CollectionDM) 
+					if(referenced_i instanceof Collection) 
 					for(var j in referenced_i.collection){
 						if(referenced_i.collection[j].reLink) referenced_i.collection[j].reLink(mytype,this);
 					}
@@ -94,7 +92,7 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 				}
 			},
 			reLink: function(dest,newObj){
-				if(this.dest instanceof CollectionDM){
+				if(this.dest instanceof Collection){
 					this.dest.addElement(newObj);
 				}
 				else if(this.dest) this.dest = newObj;
@@ -102,16 +100,17 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 		}
 	);
 
-	var CollectionDM = newClass(
-		function(data,JSON_data){
+	var Collection = function(data,JSON_data){
 			for(var key in data){
 				this[key] = data[key];
 			}
 			this.collection = [];
 			this.index = {};
 			this.addElements(JSON_data);
-		},{
-			__elemClass__: CollectionableDM,
+		};
+	createPrototype(Collection,
+		{
+			__elemClass__: Collectionable,
 			addElements: function(JSON_data){
 				var replaced = [];
 				if(JSON_data){
@@ -200,11 +199,12 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 	);
 
 	//PARA IDs COMPUESTOS!!!!!!!!!
-	var MultiIdCollectionDM = newClass(
-		function(data,JSON_data){
-			CollectionDM.call(this,arguments);
-		},{
-			__elemClass__: CollectionableDM,
+	var MultiIdCollection = function(data,JSON_data){
+			Collection.call(this,arguments);
+		};
+	createPrototype(MultiIdCollection,	
+		{
+			__elemClass__: Collectionable,
 			getId: function(ids){
 				var result='';
 				for (var i=0;i<ids.length-1;i++) {
@@ -227,11 +227,10 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 				}
 			},
 		},
-	CollectionDM);
+	Collection);
 
 
-	var MultiCollectionDM = newClass(
-		function(data,JSON_data){
+	var MultiCollection = function(data,JSON_data){
 			for(var key in data){
 				this[key] = data[key];
 			}
@@ -242,8 +241,10 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 				this.index[type] = {};
 			}
 			this.addElements(JSON_data);
-		},{
-			__elemClass__: {elem: CollectionableDM},
+		};
+	createPrototype(MultiCollection,
+		{
+			__elemClass__: {elem: Collectionable},
 			addElements: function(type,JSON_data){
 				var replaced = [];
 				if(JSON_data){
@@ -280,7 +281,7 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 				}
 			},
 			linkElements: function(ids,source,type,source_type){
-				if(source_type || source instanceof MultiCollectionDM){
+				if(source_type || source instanceof MultiCollection){
 					if(!source_type) source_type = type;
 					for(var i in ids){
 						this.addElement(type,source.get(source_type,ids[i].id));
@@ -343,7 +344,7 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 				return arr;
 			},
 		},
-	CollectionDM);
+	Collection);
 
 
 	/* SERIALIZER *********************/
@@ -371,12 +372,12 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 	}*/
 
 	return {
-		newClass: newClass,
+		createPrototype:createPrototype,
 		clone: clone,
-		CollectionableDM: CollectionableDM,
-		CollectionDM: CollectionDM,
-		MultiIdCollectionDM: MultiIdCollectionDM,
-		MultiCollectionDM: MultiCollectionDM,
+		Collectionable: Collectionable,
+		Collection: Collection,
+		MultiIdCollection: MultiIdCollection,
+		MultiCollection: MultiCollection,
 	};
 
 }]);

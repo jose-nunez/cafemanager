@@ -17,12 +17,12 @@ angular.module('cafeManagerApp').factory('ProductDataLoader',['$q','DataLoader',
 		productQuantity: 1,
 	};
 
-	var prices = new PDM.PricesDM();
-	var categories = new PDM.CategoriesDM();
-	var products = new PDM.ProductsDM({options:productsOptions});
-	var extras = new PDM.ExtrasDM();
-	var modifiers = new CD.CollectionDM();
-	var modifier_extra_singles = new PDM.ModifierExtraSinglesDM();
+	var prices = new PDM.Prices();
+	var categories = new PDM.Categories();
+	var products = new PDM.Products({options:productsOptions});
+	var extras = new PDM.Extras();
+	var modifiers = new CD.Collection();
+	var modifier_extra_singles = new PDM.ModifierExtraSingles();
 
 	var loadingProducts = $q.defer();
 
