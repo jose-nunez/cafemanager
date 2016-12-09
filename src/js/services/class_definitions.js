@@ -49,7 +49,7 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 				else if(typeof map.sources_names == 'string')
 					this.normalize_unit(map.sources_names,map.source_collection,map.dest_name,map.type,map.dest_class);
 				else
-					this.normalize_unit_multi(map.sources_names,map.source_collection,map.dest_name);
+					this.normalize_unit_multi(map.sources_names,map.source_collection,map.dest_name,map.dest_class);
 			},
 			normalize_data_unit: function(source_name,dest_class,dest_name){
 				var new_collection;
@@ -157,6 +157,9 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 					this.get(ids[i]).reLinkReferenced();
 				}
 			},
+			getAll: function(){
+				return this.collection;
+			},
 			get: function(ids){
 				if(!ids) return undefined;
 				else if(!(ids instanceof Array)){
@@ -194,6 +197,9 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 					arr.push(this.collection[this.index[id]].unNormalize());
 				}
 				return arr;
+			},
+			count:function(){
+				if(this.collection) return this.collection.length;
 			},
 		}
 	);
@@ -298,6 +304,21 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 					this.get(type,ids[i]).reLinkReferenced();
 				}
 			},
+			getAll: function(type){
+				// if(!type) return Collection.prototype.getAll.call(this);
+				if(!type) return this.collection;
+
+				var result = [];
+				for(var id in this.index[type]){
+					result.push(this.collection[this.index[type][id]]);
+				}
+				return result;
+			},
+			count: function(type){
+				// if(!type) return Collection.prototype.getAll.call(this).length;
+				if(!type) return this.collection.length;
+				else return Object.keys(this.index[type]).length;
+			},
 			get: function(type,ids){
 				if(!ids) return undefined;
 				else if(!(ids instanceof Array)){
@@ -318,13 +339,6 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 				var result = [];
 				for(var id in this.index[type]){
 					result.push({id:id});
-				}
-				return result;
-			},
-			getAll: function(type){
-				var result = [];
-				for(var id in this.index[type]){
-					result.push(this.collection[this.index[type][id]]);
 				}
 				return result;
 			},

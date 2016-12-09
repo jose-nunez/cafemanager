@@ -35,19 +35,13 @@ angular.module('cafeManagerApp').filter("breadCrumbsFilter",function (){
 angular.module('cafeManagerApp').filter("filterProductsCategories",function (){
 	function hasCategory(product,category){
 	// 1:all|2:sale|3:nocat|4:packs|5:nostock|6:disabled
-		if(category.id==5) return (!product.stock);
+		if(category.id==5) return !product.hasStock();
 		else if(category.id==6 && !product.isEnabled()) return true;
 		else if(!product.isEnabled()) return false;
 		else if(category.id==4 && product.type=='pack') return true;
-		else if(category.id==3 && product.categories.collection.length==0) return true;
-		else if(category.id==2){
-			for(var key in product.prices.collection){
-				if(product.prices.collection[key].type == 3) return true;
-			}
-			return false;
-		}
-		else if(!product.categories) return false;
-		else if(product.categories.get(category.id)) return true;
+		else if(category.id==2) return product.onSale();
+		else if(category.id==3 && !product.hasCategories()) return true;
+		else if(product.hasCategory(category.id)) return true;
 		else{
 			var children = category.children;
 			if(!children) return false;

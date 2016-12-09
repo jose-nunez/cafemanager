@@ -148,7 +148,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 			preNormalize: function(sources){
 				this.parent = sources.categories.get(this.parent);
 				this.normalize({sources_names:'children',source_collection:sources.categories});
-				this.normalize({sources_names:{single:'singles',pack:'packs'},source_collection:sources.products,dest_name:'products'});
+				this.normalize({sources_names:{single:'singles',pack:'packs'},source_collection:sources.products,dest_name:'products',dest_class:Products});
 			},
 			unNormalize: function(){
 				var my_clone = CD.clone(this,true);
@@ -182,6 +182,37 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 						break;
 					default:;
 				}
+			},
+			/*getProductNames: function(children){
+				var products = [];
+				for(var i in this.products.collection){
+					products.push(this.products.collection[i].name);
+				}
+				if(children!==false){
+					for(i in this.children.collection){
+						products = products.concat(this.children.collection[i].getProductNames());
+					}
+				}
+				return products;
+			},*/
+			getProducts: function(incChildren,filter){
+				var products = filter? this.products[filter]() : this.products.getAll();
+				if(incChildren!==false){
+					var children = this.children.getAll();
+					for(i in children){
+						products = products.concat(children[i].getProducts(incChildren,filter));
+					}
+				}
+				return products;
+			},
+			onSale: function(incChildren){
+				return this.getProducts(incChildren,'onSale');
+			},
+			hasStock:function(incChildren){
+				return this.getProducts(incChildren,'hasStock');
+			},
+			isEnabled:function(incChildren){
+				return this.getProducts(incChildren,'isEnabled');
 			},
 		},
 	CD.Collectionable);
@@ -281,8 +312,19 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				}
 				return new_price;
 			},
-			isEnabled: function(pack){
-				return (pack&&this.enabled_packs)||this.enabled_single;
+			hasCategory: function(category_id){return Boolean(this.hasCategories() && this.categories.get(category_id));},
+			hasCategories:function(){return Boolean(this.categories && this.categories.count()>0)},
+			isEnabled: function(enabled_packs){
+				return (enabled_packs&&this.enabled_packs)||this.enabled_single;
+			},
+			onSale: function(){
+				for(var key in this.prices.collection){
+					if(this.prices.collection[key].type == 3) return true;
+				}
+				return false;
+			},
+			hasStock: function(){
+				return Boolean(this.stock);
 			},
 			preNormalize: function(sources){
 				this.normalize({sources_names:'categories',source_collection:sources.categories});
@@ -346,6 +388,16 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 			isEnabled: function(){
 				return this.enabled;
 			},
+			onSale:function(){
+				return false;
+			},
+			hasStock: function(){
+				var hasStock = true;
+				for(var key in this.singles.collection){
+					hasStock = hasStock && this.singles.collection[key].hasStock();
+				}
+				return hasStock;
+			},
 			preNormalize: function(sources){
 				Single.prototype.preNormalize.call(this,sources);
 				this.updatePackPrice();
@@ -397,16 +449,44 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 	/* COLECCION DE PRODUCTOS *********************/
 	var Products = function(data,JSON_data){
 			CD.MultiCollection.apply(this,arguments);
-			this.clearSelected();
 		};
 	createPrototype(Products,
 		{
 			__elemClass__: {single:Single,pack:Pack},
-			/*getFirstSelected: function(type){
-				if(!type) type = 'single';
-				for(var i in this.selected[type]) return this.selected[type][i];
-				return undefined;
-			},*/
+			onSale: function(opt){
+				return this._getFiletered('onSale',opt);
+			},
+			hasStock: function(opt){
+				return this._getFiletered('hasStock',opt);
+			},
+			isEnabled:function(opt){
+				return this._getFiletered('isEnabled',opt);
+			},
+			_getFiletered:function(status,opt){
+				var product;
+				var filtered = [];
+				for(var key in this.collection){
+					product = this.collection[key];
+					if(product[status]() && (
+						(opt && opt.type && product.type==opt.type) || 
+						(opt && opt.category && product.categories.get(opt.category)) || 
+						!opt
+					)){
+						filtered.push(product);
+					}
+				}
+				return filtered;
+			},
+		},
+	CD.MultiCollection);
+
+
+	var ProductsSelectable = function(data,JSON_data){
+			Products.apply(this,arguments);
+			this.clearSelected();
+		};
+	createPrototype(ProductsSelectable,
+		{
 			setSelected: function(product,price){
 				var result=false; //Retorna verdadero si seleccionó o deseleccionó según los parámetros indicados
 			
@@ -582,7 +662,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				this.selectedMultiple = new_selectedMultiple;
 			},
 		},
-	CD.MultiCollection);
+	Products);
 
 
 	return {
@@ -597,5 +677,6 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 		Single: Single,
 		Pack: Pack,
 		Products: Products,
+		ProductsSelectable:ProductsSelectable,
 	};
 }]);
