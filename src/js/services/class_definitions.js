@@ -100,13 +100,19 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 		}
 	);
 
-	var Collection = function(data,JSON_data){
-			for(var key in data){
-				this[key] = data[key];
-			}
+	var Collection = function(data){
+			var JSON_data;
 			this.collection = [];
 			this.index = {};
-			this.addElements(JSON_data);
+
+			if(data){
+				JSON_data = data.elements;
+				delete data.elements;
+				for(var key in data){
+					this[key] = data[key];
+				}
+				if(JSON_data) this.addElements(JSON_data);
+			}
 		};
 	createPrototype(Collection,
 		{
@@ -205,7 +211,7 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 	);
 
 	//PARA IDs COMPUESTOS!!!!!!!!!
-	var MultiIdCollection = function(data,JSON_data){
+	var MultiIdCollection = function(data){
 			Collection.call(this,arguments);
 		};
 	createPrototype(MultiIdCollection,	
@@ -236,17 +242,22 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 	Collection);
 
 
-	var MultiCollection = function(data,JSON_data){
-			for(var key in data){
-				this[key] = data[key];
-			}
-
+	var MultiCollection = function(data){
+			var JSON_data;
 			this.collection = [];
 			this.index = {};
+			if(data){
+				JSON_data = data.elements;
+				delete data.elements;
+				for(var key in data){
+					this[key] = data[key];
+				}
+			}
+			
 			for(var type in this.__elemClass__){
 				this.index[type] = {};
 			}
-			this.addElements(JSON_data);
+			if(JSON_data) this.addElements(JSON_data);
 		};
 	createPrototype(MultiCollection,
 		{

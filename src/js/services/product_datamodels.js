@@ -6,6 +6,14 @@ Product Data Models
 
 angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions',function(CD){
 
+	function extractIds(idsObjs){
+		var arr = [];
+		for(var i in idsObjs){
+			arr.push(idsObjs[i].id);
+		}
+		return arr;
+	}
+
 	var createPrototype = CD.createPrototype;
 
 	/* ModifierExtraSingle *********************/
@@ -54,7 +62,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 	CD.Collectionable);
 
 	/* ModifierExtraSingles *********************/
-	var ModifierExtraSingles = function(data,JSON_data){
+	var ModifierExtraSingles = function(data){
 			CD.Collection.apply(this,arguments);
 		};
 	createPrototype(ModifierExtraSingles,
@@ -124,7 +132,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 
 
 	/* COLECCION DE PRECIOS *********************/
-	var Prices = function(data,JSON_data){
+	var Prices = function(data){
 			CD.Collection.apply(this,arguments);
 		};
 	createPrototype(Prices,
@@ -147,8 +155,13 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 			},
 			preNormalize: function(sources){
 				this.parent = sources.categories.get(this.parent);
-				this.normalize({sources_names:'children',source_collection:sources.categories});
-				this.normalize({sources_names:{single:'singles',pack:'packs'},source_collection:sources.products,dest_name:'products',dest_class:Products});
+				this.children = new CD.Collection({__elemClass__:Category,elements:sources.categories.get(extractIds(this.children))});
+				
+				this.products = new Products();
+				this.products.addElements('single',sources.products.get('single',extractIds(this.singles)));
+				this.products.addElements('pack',sources.products.get('pack',extractIds(this.packs)));
+				delete this.singles;
+				delete this.packs;
 			},
 			unNormalize: function(){
 				var my_clone = CD.clone(this,true);
@@ -183,20 +196,8 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 					default:;
 				}
 			},
-			/*getProductNames: function(children){
-				var products = [];
-				for(var i in this.products.collection){
-					products.push(this.products.collection[i].name);
-				}
-				if(children!==false){
-					for(i in this.children.collection){
-						products = products.concat(this.children.collection[i].getProductNames());
-					}
-				}
-				return products;
-			},*/
-			getProducts: function(incChildren,filter){
-				var products = filter? this.products[filter]() : this.products.getAll();
+			getProducts: function(incChildren,filter,type){
+				var products = filter? this.products[filter]({type:type}) : this.products.getAll();
 				if(incChildren!==false){
 					var children = this.children.getAll();
 					for(i in children){
@@ -205,21 +206,21 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				}
 				return products;
 			},
-			onSale: function(incChildren){
-				return this.getProducts(incChildren,'onSale');
+			onSale: function(incChildren,type){
+				return this.getProducts(incChildren,'onSale',type);
 			},
-			hasStock:function(incChildren){
-				return this.getProducts(incChildren,'hasStock');
+			hasStock:function(incChildren,type){
+				return this.getProducts(incChildren,'hasStock',type);
 			},
-			isEnabled:function(incChildren){
-				return this.getProducts(incChildren,'isEnabled');
+			isEnabled:function(incChildren,type){
+				return this.getProducts(incChildren,'isEnabled',type);
 			},
 		},
 	CD.Collectionable);
 
 
 	/* COLECCION DE CATEGORÍAS *********************/
-	var Categories = function(data,JSON_data){
+	var Categories = function(data){
 			CD.Collection.apply(this,arguments);
 
 			this.setSelected();
@@ -252,7 +253,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 	CD.Collectionable);
 
 	/* COLECCION DE EXTRAS *********************/
-	var Extras = function(data,JSON_data){
+	var Extras = function(data){
 			CD.Collection.apply(this,arguments);
 			this.setSelected();
 		};
@@ -334,6 +335,10 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 					this.normalize({sources_names:'extras',source_collection:sources.extras});
 					this.normalize({sources_names:'modifiers',source_collection:sources.modifiers});
 					this.normalize({sources_names:'modifier_extra_singles',source_collection:sources.modifier_extra_singles});
+
+
+
+
 				}
 			},
 			unNormalize: function(){
@@ -447,7 +452,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 
 
 	/* COLECCION DE PRODUCTOS *********************/
-	var Products = function(data,JSON_data){
+	var Products = function(data){
 			CD.MultiCollection.apply(this,arguments);
 		};
 	createPrototype(Products,
@@ -463,15 +468,14 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				return this._getFiletered('isEnabled',opt);
 			},
 			_getFiletered:function(status,opt){
-				var product;
+				var product,hasType,hasCat;
 				var filtered = [];
 				for(var key in this.collection){
 					product = this.collection[key];
-					if(product[status]() && (
-						(opt && opt.type && product.type==opt.type) || 
-						(opt && opt.category && product.categories.get(opt.category)) || 
-						!opt
-					)){
+					hasType = (opt && opt.type     && product.type==opt.type) || !opt || !opt.type;
+					hasCat =  (opt && opt.category && product.categories.get(opt.category)) || !opt || !opt.category;
+					
+					if(product[status]() && hasType && hasCat){
 						filtered.push(product);
 					}
 				}
@@ -481,7 +485,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 	CD.MultiCollection);
 
 
-	var ProductsSelectable = function(data,JSON_data){
+	var ProductsSelectable = function(data){
 			Products.apply(this,arguments);
 			this.clearSelected();
 		};
