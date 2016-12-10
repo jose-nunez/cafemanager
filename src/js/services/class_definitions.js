@@ -140,6 +140,18 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 					return result;
 				}
 			},
+			getFiletered:function(filter){
+				if(!filter) filter=function(elem){return true;};
+				
+				var elem,filtered = [];
+				for(var key in this.collection){
+					elem = this.collection[key];
+					if(filter(elem)){
+						filtered.push(elem);
+					}
+				}
+				return filtered;
+			},
 			getByPos: function(pos){
 				return this.collection[pos];
 			},
@@ -285,6 +297,14 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 				}
 				return result;
 			},
+			/*getFiletered:function(type,filter){
+				if(!filter) filter=function(elem){return true};
+				
+				var newFilter = function(elem){
+					(!type || elem.type == type) && filter(elem);
+				}
+				return Collection.prototype.getFiletered.call(this,newFilter);
+			},*/
 			count: function(type){
 				// if(!type) return Collection.prototype.getAll.call(this).length;
 				if(!type) return this.collection.length;

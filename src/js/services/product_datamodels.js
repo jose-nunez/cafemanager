@@ -455,16 +455,34 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 	createPrototype(Products,
 		{
 			__elemClass__: {single:Single,pack:Pack},
+
+			genFilter:function(opt){
+				return function(product){
+					var hasType =   (opt && opt.type     && product.type==opt.type) 			 || !opt || !opt.type;
+					var hasCat  =   (opt && opt.category && product.hasCategory(opt.category))   || !opt || !opt.category;
+					var hasStatus = (opt && opt.status   && product[opt.status]())               || !opt || !opt.status;
+					return hasStatus && hasType && hasCat;
+				};
+			},
 			onSale: function(opt){
-				return this._getFiletered('onSale',opt);
+				if(!opt) opt = {};
+				opt.status = 'onSale';
+				return this.getFiletered(this.genFilter(opt));
 			},
 			hasStock: function(opt){
-				return this._getFiletered('hasStock',opt);
+				if(!opt) opt = {};
+				opt.status = 'hasStock';
+				return this.getFiletered(this.genFilter(opt));
 			},
 			isEnabled:function(opt){
-				return this._getFiletered('isEnabled',opt);
+				if(!opt) opt = {};
+				opt.status = 'isEnabled';
+				return this.getFiletered(this.genFilter(opt));
 			},
-			_getFiletered:function(status,opt){
+			hasCategory:function(category_id){
+				return this.getFiletered(this.genFilter({category:category_id}));
+			},
+			/*_getFiletered:function(status,opt){
 				var product,hasType,hasCat;
 				var filtered = [];
 				for(var key in this.collection){
@@ -477,7 +495,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 					}
 				}
 				return filtered;
-			},
+			},*/
 		},
 	CD.MultiCollection);
 
