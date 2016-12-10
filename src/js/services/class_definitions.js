@@ -39,45 +39,6 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 		};
 	createPrototype(Collectionable,
 		{
-			preNormalize: function(){
-				// NADA POR ACA
-			},
-			normalize: function(map){
-				var isMulti = map.source_collection instanceof MultiCollection;
-				if(!map.source_collection)
-					this.normalize_data_unit(map.sources_names,map.dest_class,map.dest_name);
-				else if(typeof map.sources_names == 'string')
-					this.normalize_unit(map.sources_names,map.source_collection,map.dest_name,map.type,map.dest_class);
-				else
-					this.normalize_unit_multi(map.sources_names,map.source_collection,map.dest_name,map.dest_class);
-			},
-			normalize_data_unit: function(source_name,dest_class,dest_name){
-				var new_collection;
-				if(!dest_name) dest_name = source_name;
-				new_collection = dest_class? new dest_class() : new Collection();
-				new_collection.addElements(this[source_name]);
-				this[dest_name] = new_collection;
-				if(dest_name!=source_name) delete(this[source_name]);
-			},
-			normalize_unit: function(source_name,source_collection,dest_name,type,dest_class){
-				var new_collection;
-				if(!dest_name) dest_name = source_name;
-				new_collection = dest_class? new dest_class() : new Collection(); 
-				new_collection.linkElements(this[source_name],source_collection,type);
-				this[dest_name] = new_collection;
-				if(dest_name!=source_name) delete(this[source_name]);
-			},
-			normalize_unit_multi: function(sources_names,source_collection,dest_name,dest_class){
-				var new_collection,source_ids;
-				new_collection = dest_class? new dest_class() : new MultiCollection({__elemClass__:source_collection.__elemClass__});
-
-				for (var type in sources_names){
-					source_ids = sources_names[type];
-					new_collection.linkElements(this[source_ids],source_collection,type);
-					delete(this[source_ids]);
-				}
-				this[dest_name] = new_collection;
-			},
 			reLinkReferenced: function(mytype,referenced){
 				if(typeof referenced == 'string') referenced = [referenced];
 				var referenced_i;
@@ -100,13 +61,19 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 		}
 	);
 
-	var Collection = function(data,JSON_data){
-			for(var key in data){
-				this[key] = data[key];
-			}
+	var Collection = function(data){
+			var JSON_data;
 			this.collection = [];
 			this.index = {};
-			this.addElements(JSON_data);
+
+			if(data){
+				JSON_data = data.elements;
+				delete data.elements;
+				for(var key in data){
+					this[key] = data[key];
+				}
+				if(JSON_data) this.addElements(JSON_data);
+			}
 		};
 	createPrototype(Collection,
 		{
@@ -188,7 +155,7 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 				var elem;
 				for (var i in collection) {
 					elem = this.get(collection[i].id);
-					if(elem.preNormalize) elem.preNormalize(sources);
+					if(elem.normalize) elem.normalize(sources);
 				}
 			},
 			unNormalize: function(){
@@ -205,7 +172,7 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 	);
 
 	//PARA IDs COMPUESTOS!!!!!!!!!
-	var MultiIdCollection = function(data,JSON_data){
+	var MultiIdCollection = function(data){
 			Collection.call(this,arguments);
 		};
 	createPrototype(MultiIdCollection,	
@@ -236,17 +203,22 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 	Collection);
 
 
-	var MultiCollection = function(data,JSON_data){
-			for(var key in data){
-				this[key] = data[key];
-			}
-
+	var MultiCollection = function(data){
+			var JSON_data;
 			this.collection = [];
 			this.index = {};
+			if(data){
+				JSON_data = data.elements;
+				delete data.elements;
+				for(var key in data){
+					this[key] = data[key];
+				}
+			}
+
 			for(var type in this.__elemClass__){
 				this.index[type] = {};
 			}
-			this.addElements(JSON_data);
+			if(JSON_data) this.addElements(JSON_data);
 		};
 	createPrototype(MultiCollection,
 		{
@@ -347,7 +319,7 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 				var elem;
 				for (var i in collection){
 					elem = this.get(type,collection[i].id);
-					if(elem.preNormalize) elem.preNormalize(sources);
+					if(elem.normalize) elem.normalize(sources);
 				}
 			},
 			unNormalize: function(type){
