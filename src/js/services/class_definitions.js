@@ -49,7 +49,7 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 					for(var j in referenced_i.collection){
 						if(referenced_i.collection[j].reLink) referenced_i.collection[j].reLink(mytype,this);
 					}
-					else if(referenced_i.relink) referenced_i.reLink(mytype,this);
+					else if(referenced_i && referenced_i.relink) referenced_i.reLink(mytype,this);
 				}
 			},
 			reLink: function(dest,newObj){
