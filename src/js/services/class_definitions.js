@@ -214,7 +214,6 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 					this[key] = data[key];
 				}
 			}
-
 			for(var type in this.__elemClass__){
 				this.index[type] = {};
 			}

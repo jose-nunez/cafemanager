@@ -335,7 +335,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 					this.packs = new CD.Collection({__elemClass__:Pack,elements:sources.products.get('pack',extractIds(this.packs))});
 					this.extras = new CD.Collection({__elemClass__:Extra,elements:sources.extras.get(extractIds(this.extras))});
 					this.modifiers = new CD.Collection({elements:sources.modifiers.get(extractIds(this.modifiers))});
-					this.modifier_extra_singles = new CD.Collection({__elemClass__:ModifierExtraSingle,elements:sources.modifier_extra_singles.get(extractIds(this.modifier_extra_singles))});				
+					this.modifier_extra_singles = new CD.Collection({__elemClass__:ModifierExtraSingle,elements:sources.modifier_extra_singles.get(extractIds(this.modifier_extra_singles))});
 				}
 			},
 			unNormalize: function(){
