@@ -36,7 +36,7 @@ angular.module('cafeManagerApp').factory('Config',['$q','$http',function($q,$htt
 			default_config[i] = loaded_config[i];
 		}
 		return default_config;
-	}
+	};
 
 	var deferred = $q.defer();
 	
@@ -179,7 +179,7 @@ angular.module('cafeManagerApp').factory('ErrorHandler',[function(){
 		handle:  function(err){
 			log('Error en '+err.type,err.err);
 		},
-	}
+	};
 
 }]);
 
@@ -196,26 +196,27 @@ angular.module('cafeManagerApp').factory('FrameSystem',[function(){
 		tablesMap: 		'views/tables/table_select.tpl.html',
 		openedTables: 	'views/tables/table_select.tpl.html', //°°°°°°°°°°°°°°°°°°°°°°°°°°°
 		
-	}
+	};
 	var FrameSets = {};
 	var FrameSetsMap = {};
 	
 	// var registerFrameSets = function(ctrl,frameSets,scope){
 	var registerFrameSets = function(ctrl,frameSets){
-		for(var i in frameSets){
+		var i;
+		for(i in frameSets){
 			FrameSetsMap[i] = ctrl;
 		}
 
 		FrameSets[ctrl] = frameSets;
 		// FrameSets[ctrl].scope = scope;
 		// Inicializa el actual frameset con cualquier frameset que no herede de otro
-		for(var i in frameSets){if(!frameSets[i].extends){ 
+		for(i in frameSets){if(!frameSets[i].extends){ 
 			FrameSets[ctrl].actual = angular.copy(frameSets[i].default);
 			FrameSets[ctrl].actual.name = i;
 			FrameSets[ctrl].actual.variation = 'default';
 		break; }}
 		return FrameSets[ctrl].actual;
-	}
+	};
 
 	var resolveVariation = function(frameSetName,variationName){
 		var ctrl = FrameSetsMap[frameSetName];
@@ -230,7 +231,7 @@ angular.module('cafeManagerApp').factory('FrameSystem',[function(){
 			if(FrameSets[ctrl][frameSetName][variationName] || FrameSets[ctrl][frameSetName][variationName] == false) return FrameSets[ctrl][frameSetName][variationName];
 			else if(FrameSets[ctrl][frameSetName].extends) return resolveVariation(FrameSets[ctrl][frameSetName].extends,variationName);
 		}
-	}
+	};
 	var setFrameSet = function(frameSetName,variationName,onoff,options){
 		var ctrl = FrameSetsMap[frameSetName];
 		if(!ctrl) return;
@@ -239,14 +240,14 @@ angular.module('cafeManagerApp').factory('FrameSystem',[function(){
 		FrameSets[ctrl].actual.name = frameSetName;
 		FrameSets[ctrl].actual.variation = (!variationName || !onoff)? 'default':variationName;
 		setVariation(ctrl,variation,onoff?undefined:resolveVariation(frameSetName,'default'));
-	}
+	};
 
 	var isOnFrameSet = function(frameSetName,variationName){
 		var ctrl = FrameSetsMap[frameSetName];
 		if(!ctrl) return false;
 		variationName = (!variationName || !onoff)? 'default':variationName;
 		return FrameSets[ctrl].actual.name == frameSetName && FrameSets[ctrl].actual.variation == variationName;
-	}
+	};
 
 	var setVariation = function(ctrl,variation,_default){
 		for(var i in variation){ if(i!='UIOptions'){// variation[i]: tamaño(small|medium|Large|etc) | frame(top|bottom|left|right|etc) |NO:UIOptions
@@ -273,7 +274,7 @@ angular.module('cafeManagerApp').factory('FrameSystem',[function(){
 
 		// FrameSets[ctrl].scope.$apply();
 		// 
-	}
+	};
 
 	/*
 	var registerFrameSets = function(ctrl,frameSets,scope){
@@ -346,13 +347,13 @@ angular.module('cafeManagerApp').factory('FrameSystem',[function(){
 		// TEMPORALES
 		FrameSets:FrameSets,
 		FrameSetsMap:FrameSetsMap,
-	}
+	};
 
 	service.registerFrameSetting = function(fnName,frameSet,onoffswitch){
 		this[fnName] = function(){
 
-		}
-	}
+		};
+	};
 
 	return service;
 

@@ -15,7 +15,7 @@ function($scope,DataLoader,Config,foundationApi,focus,$state,PDL){
 	********************************************************************************************************* */
 
 	$scope.baseImgUrl = 'img/';
-	$scope.filteredProducts;
+	$scope.filteredProducts = [];
 
 	// $scope.extras_currentPage = 1;
 
@@ -46,14 +46,14 @@ function($scope,DataLoader,Config,foundationApi,focus,$state,PDL){
 			itemsPerPage: config["products-per-page"],
 			paginateFilters: config["paginate-filters"],
 			carousel: true,
-		}
+		};
 
 		$scope.filterOptions = {
 			pre_query: '',
 			query: '',
 			letter: '',
 			exclude: config["exclusive-filters"],
-		}
+		};
 
 		$scope.UIOptions = {
 		// $scope.globalUIOptions.ProductCtrl = {
@@ -65,7 +65,7 @@ function($scope,DataLoader,Config,foundationApi,focus,$state,PDL){
 			gridXxlarge: config["grid-columns-xxlarge"],
 			// filtersTab: 'categories', // categories|alphabet
 			showPrices:false,
-		}
+		};
 		// $scope.UIOptions = $scope.globalUIOptions.ProductCtrl;
 
 
@@ -89,8 +89,8 @@ function($scope,DataLoader,Config,foundationApi,focus,$state,PDL){
 		********************************************************************************************************* */
 		$scope.setPricesMode = function(onoff){
 			$scope.productsOptions.showPrices = onoff;
-			$scope.UIOptions.frame.large.right = !onoff? "tableCount" : undefined;;
-		}
+			$scope.UIOptions.frame.large.right = !onoff? "tableCount" : undefined;
+		};
 
 
 		$scope.getClassGrid = function(){
@@ -104,7 +104,7 @@ function($scope,DataLoader,Config,foundationApi,focus,$state,PDL){
 				gridclass['xxlarge-up-' + factorize($scope.UIOptions.gridXxlarge)] = true;
 			}
 			return gridclass;
-		}
+		};
 
 
 		/* *********************************************************************************************************
@@ -121,7 +121,7 @@ function($scope,DataLoader,Config,foundationApi,focus,$state,PDL){
 			$scope.filterOptions.query = query;
 
 			if(!noSetPagination) $scope.refreshFiltersPagination();
-		}
+		};
 		
 		$scope.setSelectedCategory = function(category,noSetPagination){
 			var hayCategory = category && category.id!=1;
@@ -131,7 +131,7 @@ function($scope,DataLoader,Config,foundationApi,focus,$state,PDL){
 			}
 			$scope.categories.setSelected(category);
 			if(!noSetPagination) $scope.refreshFiltersPagination();
-		}
+		};
 
 		$scope.filterLetter = function(letter,noSetPagination){
 			var hayLetter = letter && letter!='';
@@ -141,14 +141,14 @@ function($scope,DataLoader,Config,foundationApi,focus,$state,PDL){
 			} 
 			$scope.filterOptions.letter = letter;
 			if(!noSetPagination) $scope.refreshFiltersPagination();
-		}
+		};
 
 		$scope.cleanFilters = function(all){
 			$scope.setSelectedCategory(undefined,true);
 			$scope.filterLetter(undefined,true);
 			if(all) $scope.filterQuery('',true);
 			$scope.refreshFiltersPagination();
-		}
+		};
 
 		$scope.isFilterActive = function(filter){
 			var hayQuery = ($scope.filterOptions.query && $scope.filterOptions.query!='');
@@ -159,18 +159,18 @@ function($scope,DataLoader,Config,foundationApi,focus,$state,PDL){
 			if(filter=="letter") return hayLetter;
 			if(filter=="all") return hayQuery && hayCategory && hayLetter;
 			if(filter=="any") return hayQuery || hayCategory || hayLetter;
-		}
+		};
 
 		$scope.refreshFiltersPagination = function(){
 			if(!$scope.paginationOptions.paginateFilters && $scope.isFilterActive('any')){
 				$scope.setPagination(false);
 			}
 			else $scope.setPagination(true);
-		}
+		};
 
 		$scope.countFilteredProducts = function(){
 			return $scope.filteredProducts? $scope.filteredProducts.length : 0;
-		} 
+		};
 
 		/* *********************************************************************************************************
 			PAGINATION
@@ -184,24 +184,24 @@ function($scope,DataLoader,Config,foundationApi,focus,$state,PDL){
 			}
 			else $scope.paginationOptions.itemsPerPage = 0;
 			$scope.pageChanged();
-		}
+		};
 		$scope.pageChanged = function(){
 			// log('se va a subir el scroll');
 			var listado = document.getElementById('seleccion_productos');
 			if(listado) listado.scrollTop = 0; //NO funciona cuando esta chico
-		}
+		};
 
 		$scope.getPageCount = function(){
 			return !$scope.filteredProducts? 1 : ($scope.paginationOptions.itemsPerPage==0? 1 : Math.floor($scope.filteredProducts.length/$scope.paginationOptions.itemsPerPage)+1);
-		}
+		};
 		$scope.nextPage = function(){
 			if($scope.paginationOptions.current<$scope.getPageCount()) $scope.paginationOptions.current++;
 			else if($scope.paginationOptions.carousel) $scope.paginationOptions.current = 1;
-		}
+		};
 		$scope.prevPage = function(){
 			if($scope.paginationOptions.current>1) $scope.paginationOptions.current--;
 			else if($scope.paginationOptions.carousel) $scope.paginationOptions.current = $scope.getPageCount();
-		}
+		};
 
 		$scope.findPageProduct = function(product){
 			var pos = $scope.filteredProducts.indexOf(product);
@@ -209,7 +209,7 @@ function($scope,DataLoader,Config,foundationApi,focus,$state,PDL){
 				var new_page =$scope.paginationOptions.itemsPerPage==0? 1 :  Math.floor(pos/$scope.paginationOptions.itemsPerPage)+1;
 				if($scope.paginationOptions.current != new_page) $scope.paginationOptions.current = new_page;
 			} 
-		}
+		};
 
 		/* *********************************************************************************************************
 			OTHERS
@@ -225,21 +225,21 @@ function($scope,DataLoader,Config,foundationApi,focus,$state,PDL){
 				$scope.productsOptions.productQuantity = 1;
 				// focus('productQuantity');
 			}
-		}
+		};
 		$scope.setNextSelectedProduct = function(is_single,findPage){
 			if($scope.products.setNextSelected($scope.filteredProducts,is_single)  && findPage){
 				$scope.findPageProduct($scope.products.selected.product);
 			}
-		}
+		};
 		$scope.setPrevSelectedProduct = function(is_single,findPage){
 			if($scope.products.setPrevSelected($scope.filteredProducts,is_single)  && findPage){
 				$scope.findPageProduct($scope.products.selected.product);
 			}
-		}
+		};
 
 		$scope.addProductCheck = function(product){
 			foundationApi.publish('main-notifications', { title: product.name+' +1', content: '' ,autoclose:1000,color:"success"});
-		}
+		};
 
 		/*$scope.filterProducts = function(){
 			var fp = filterProductsQueryFilter($scope.products.collection,$scope.filterProduct);

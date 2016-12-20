@@ -13,7 +13,7 @@ angular.module('cafeManagerApp').filter("childrenCategoryFilter",function (){
 
 		}
 		return result;
-	}
+	};
 });
 
 // Genera los breadcrumbs
@@ -28,7 +28,7 @@ angular.module('cafeManagerApp').filter("breadCrumbsFilter",function (){
 	return function(categories,category){
 		if(category) return addParent(categories,category,[category]);
 		else return [];
-	}
+	};
 });
 
 // Filtra productos segun la categoría buscada
@@ -55,9 +55,9 @@ angular.module('cafeManagerApp').filter("filterProductsCategories",function (){
 	}
 	return function(productsArr,category/*,products*/){
 		// log('Filtrando productos por categoria');
-		var result = [];
+		var result = [],key;
 		if(!category || category.id==1){
-			for(var key in productsArr) {
+			for(key in productsArr) {
 				if(productsArr[key].isEnabled()){ 
 					result.push(productsArr[key]);
 				}
@@ -65,39 +65,37 @@ angular.module('cafeManagerApp').filter("filterProductsCategories",function (){
 			return result;
 		}
 		else if(category){
-			for(var key in productsArr) {
+			for(key in productsArr) {
 				if(hasCategory(productsArr[key],category)) result.push(productsArr[key]);
 			}
 			return result;
 		}
-	}
+	};
 });
 
 
 
 angular.module('cafeManagerApp').filter("filterProductLetter",function (){
 	return function(productsArr,letter){
+		var result = [];
+		var product,key;
 		if(!letter || letter=='') return productsArr;
 		else if(letter=='0-9'){
 			var nums = ['0','1','2','3','4','5','6','7','8','9'];
-			var result = [];
-			var product;
-			for(var key in productsArr) {
+			for(key in productsArr) {
 				product = productsArr[key];
 				if(nums.indexOf(product.name.substr(0,1))!=-1) result.push(product);
 			}
 			return result;
 		}
 		else{
-			var result = [];
-			var product;
-			for(var key in productsArr) {
+			for(key in productsArr) {
 				product = productsArr[key];
 				if(product.name.substr(0,1).toLowerCase() == letter.toLowerCase()) result.push(product);
 			}
 			return result;
 		}
-	}
+	};
 });
 
 
@@ -173,7 +171,7 @@ angular.module('cafeManagerApp').filter("filterProductsQuery",function (){
 			}
 		}
 		return result;
-	}
+	};
 });
 
 
@@ -183,7 +181,7 @@ angular.module('cafeManagerApp').filter("updateSelected",function (){
 		// var selectedProducts = products.selected;
 		if(products && refreshSelection) products.updateSelected(productsArr);
 		return productsArr;
-	}
+	};
 });
 
 angular.module('cafeManagerApp').filter("filterPrices",function (){
@@ -194,5 +192,5 @@ angular.module('cafeManagerApp').filter("filterPrices",function (){
 			if(prices[key].active) result.push(prices[key]);
 		}
 		return result;
-	}
+	};
 });

@@ -50,7 +50,8 @@ angular.module('cafeManagerApp').factory('ProductDataLoader',['$q','DataLoader',
 				single = products.get('single',singles[i].id); 
 
 				single.packs = [];
-				for(var j in single.prices){ 
+				var j;
+				for(j in single.prices){ 
 					pivot = prices.get(single.prices[j].id); 
 					if(pivot.type == 4){
 						// PUEDE QUE YA ESTÉ NORMALIZADO
@@ -61,7 +62,7 @@ angular.module('cafeManagerApp').factory('ProductDataLoader',['$q','DataLoader',
 
 				single.extras = [];
 				single.modifiers = [];
-				for(var j in single.modifier_extra_singles){
+				for(j in single.modifier_extra_singles){
 					pivot = modifier_extra_singles.get(single.modifier_extra_singles[j].id);
 					
 					if(pivot.extra_id) single.extras.push({id:pivot.extra_id});
@@ -71,7 +72,7 @@ angular.module('cafeManagerApp').factory('ProductDataLoader',['$q','DataLoader',
 					else single.modifiers.push({id:pivot.modifier.id});
 				}
 			 }
-		}
+		};
 		if(data.singles) cuchufleta_ql(data.singles);
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -110,12 +111,12 @@ angular.module('cafeManagerApp').factory('ProductDataLoader',['$q','DataLoader',
 		};
 
 		loadingProducts.resolve(resp);
-	}
+	};
 
 	updateUnit = function(type,obj){
 		DataLoader.update(type,obj);		
 		// DataLoader.update('single',{ name: 'Lisa Maria',id:1});
-	}
+	};
 
 	// INICIA CARGA DE DATOS
 	// DataLoader.get('all').then(refreshContents);

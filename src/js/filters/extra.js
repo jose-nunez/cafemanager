@@ -15,6 +15,6 @@ angular.module('cafeManagerApp').filter("filterExtras",function (){
 			}
 			return result;
 		}
-	}
+	};
 
 });

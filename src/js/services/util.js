@@ -40,23 +40,23 @@ angular.module('cafeManagerApp').factory('matchMediaQuery',['FoundationApi',func
 			size_up = size_up.up;
 			return match_me(size_up);
 		} else return false;
-	}
+	};
 	var match_down = function(size_name){
 		var size_down = foundationApi.getSettings().mediaMap[size_name];
 		if(size_down){
 			size_down = size_down.down;
 			return match_me(size_down);
 		} else return false;
-	}
+	};
 	var match_me = function(size_name){
 		var size = foundationApi.getSettings().mediaQueries[size_name];
 		return window.matchMedia(size).matches;
-	}
+	};
 
 	return function(size_name,only){
 		return only? match_me(size_name) && !match_up(size_name) : match_me(size_name);
 		// return match_me(size_name);
-	}
+	};
 }]);
 
 angular.module('cafeManagerApp').factory('WindowResize',[function() {

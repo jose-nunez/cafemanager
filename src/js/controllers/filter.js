@@ -11,6 +11,6 @@ function($scope,$state,$stateParams){
 	
 	$scope.autohideFiltersFrame = function(evt){
 		if(!$state.is('app.addOrder')) $state.go('^');
-	}
+	};
 
 }]);

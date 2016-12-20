@@ -85,7 +85,7 @@ app.config(['$translateProvider','$stateProvider','$urlRouterProvider',function(
 			tableCount: 	{templateUrl:'views/tables/table_count.tpl.html'},
 			tablesMap: 		{templateUrl:'views/tables/table_select.tpl.html'},
 			openedTables: 	{templateUrl:'views/tables/table_select.tpl.html'}, //°°°°°°°°°°°°°°°°°°°°°°°°°°°
-		}
+		};
 
 		/*$urlRouterProvider
 		.when('/legacy-route', {

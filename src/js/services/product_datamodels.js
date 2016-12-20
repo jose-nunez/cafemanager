@@ -55,7 +55,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 					case 'extra':
 					case 'modifier':
 						this[type] = newObj; break;
-					default:;
+					default:
 				}
 			},
 		},
@@ -121,7 +121,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 					case 'pack':
 						this[type] = newObj;
 						break;
-					default:;
+					default:
 				}
 			},
 			isSelectable: function(productType){
@@ -193,14 +193,14 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 					case 'pack':
 						if(this.products) this.products.addElement(type,newObj);
 						break;
-					default:;
+					default:
 				}
 			},
 			getProducts: function(incChildren,filter,type){
 				var products = filter? this.products[filter]({type:type}) : this.products.getAll();
 				if(incChildren!==false){
 					var children = this.children.getAll();
-					for(i in children){
+					for(var i in children){
 						products = products.concat(children[i].getProducts(incChildren,filter));
 					}
 				}
@@ -302,7 +302,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 			},
 			getTopPrice: function(){
 				var priority = 9999;
-				var new_price = undefined;
+				var new_price;
 				var price;
 				for(var i in this.prices.collection){
 					price = this.prices.collection[i];
@@ -314,7 +314,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				return new_price;
 			},
 			hasCategory: function(category_id){return Boolean(this.hasCategories() && this.categories.get(category_id));},
-			hasCategories:function(){return Boolean(this.categories && this.categories.count()>0)},
+			hasCategories:function(){return Boolean(this.categories && this.categories.count()>0);},
 			isEnabled: function(enabled_packs){
 				return (enabled_packs&&this.enabled_packs)||this.enabled_single;
 			},
@@ -367,7 +367,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 					case 'extra':if(this.extras) this.extras.addElement(newObj); break;
 					case 'modifier':if(this.modifiers) this.modifiers.addElement(newObj); break;
 					case 'modifier_extra_single':if(this.modifier_extra_singles) this.modifier_extra_singles.addElement(newObj); break;
-					default:;
+					default:
 				}
 			},
 		},
@@ -423,7 +423,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 					case 'category':if(this.categories) this.categories.addElement(newObj); break;
 					case 'price':if(this.prices) this.prices.addElement(newObj); break;
 					case 'single':if(this.singles) this.singles.addElement(newObj); break;
-					default:;
+					default:
 				}
 			},
 			updatePackPrice: function(){ //LLAMAR DESPUES DE NORMALIZAR!

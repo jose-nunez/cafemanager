@@ -112,10 +112,11 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 				}
 			},
 			linkElements: function(ids,source,source_type){
-				if(source_type){ for(var i in ids){
+				var i;
+				if(source_type){ for(i in ids){
 					this.addElement(source.get(source_type,ids[i].id));
 				}}
-				else{ for(var i in ids){
+				else{ for(i in ids){
 					this.addElement(source.get(ids[i].id));
 				}}
 			},
@@ -194,7 +195,7 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 				var result='';
 				for (var i=0;i<ids.length-1;i++) {
 					result += ids[i]+'|';
-				};
+				}
 				result += ids[i];
 				return result;
 			},
@@ -249,7 +250,7 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 				return replaced;
 			},
 			addElement: function(type,data){
-				var type = type || data.type;
+				type = type || data.type;
 				var element,pos;
 
 				if(data instanceof this.__elemClass__[type]) element = data;
@@ -270,14 +271,15 @@ angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
 				}
 			},
 			linkElements: function(ids,source,type,source_type){
+				var i;
 				if(source_type || source instanceof MultiCollection){
 					if(!source_type) source_type = type;
-					for(var i in ids){
+					for(i in ids){
 						this.addElement(type,source.get(source_type,ids[i].id));
 					}
 				}
 				else{
-					for(var i in ids){
+					for(i in ids){
 						this.addElement(type,source.get(ids[i].id));
 					}
 				}
