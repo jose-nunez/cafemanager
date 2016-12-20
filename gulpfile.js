@@ -63,9 +63,7 @@ gulp.task('scripts', function() {
 
 		/*src_dir + 'js/data_models/common.js',
 		src_dir + 'js/data_models/product.js',*/
-		
-		src_dir + 'js/data_models/*',
-		
+
 		src_dir + 'js/app.js',
 		src_dir + 'js/**',
 		/*src_dir + 'js/filters/common.js',
