@@ -15,7 +15,7 @@ function($scope,DataLoader,Config,foundationApi,focus,$state,PDM){
 	********************************************************************************************************* */
 
 	$scope.baseImgUrl = 'img/';
-	$scope.filteredProducts = [];
+	$scope.filteredProducts;
 
 	// $scope.extras_currentPage = 1;
 

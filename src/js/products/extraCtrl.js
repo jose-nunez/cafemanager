@@ -13,8 +13,8 @@ angular.module('cafeManagerApp').controller('ExtraCtrl',['$scope','Config',funct
 	);
 
 	$scope.filterExtrasByProdut = true;
-	$scope.selectedProduct = {};
-	$scope.selectedExtra = {};
+	$scope.selectedProduct;
+	$scope.selectedExtra;
 	// $scope.selectedModifiers;
 	/*$scope.$watch('products.selectedSingle', function(){
 		$scope.selectedProduct = $scope.products.selectedSingle? $scope.products.selectedSingle.product : undefined;
