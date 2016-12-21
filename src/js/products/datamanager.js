@@ -1,10 +1,10 @@
 /**************************************
 CAFE MANAGER
-Product Data Models
+Product Data Manger
 *****************************************/
 (function(){'use strict';}());
 
-angular.module('cafeManagerApp').factory('ProductDataLoader',['$q','DataLoader','ClassDefinitions','ProductDataModels',function($q,DataLoader,CD,PDM){
+angular.module('cafeManagerApp').factory('ProductDataManager',['$q','DataLoader','ClassDefinitions','ProductDataModels',function($q,DataLoader,CD,PDM){
 
 	var productsOptions = {
 		allPriceable: "none", // expand|over|none
@@ -27,7 +27,7 @@ angular.module('cafeManagerApp').factory('ProductDataLoader',['$q','DataLoader',
 	var loadingProducts = $q.defer();
 
 	var refreshContents = function(data,dontSave){
-		log('ProductDataLoader: Procesando los datos');
+		log('ProductDataManager: Procesando los datos');
 
 		// if(!dontSave) DataCache.update(data);
 		var updated = [];
@@ -87,13 +87,12 @@ angular.module('cafeManagerApp').factory('ProductDataLoader',['$q','DataLoader',
 			modifiers:modifiers,
 			extras:extras,
 		};
-		
+		// RELINK
 		if(data.prices) prices.normalize(sources,data.prices);
 		if(data.categories) categories.normalize(sources,data.categories);
 		if(data.singles) products.normalize(sources,'single',data.singles);
 		if(data.packs) products.normalize(sources,'pack',data.packs);
 		if(data.modifier_extra_singles) modifier_extra_singles.normalize(sources,data.modifier_extra_singles);
-		
 		// Actualizar links despues de normalizar
 		updated.forEach(function(element){
 			if(element.reLinkReferenced) element.reLinkReferenced();

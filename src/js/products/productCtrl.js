@@ -5,8 +5,8 @@ Product controller
 (function(){'use strict';}());
 
 angular.module('cafeManagerApp').controller('ProductCtrl',[
-'$scope','DataLoader','Config','FoundationApi','focus','$state','ProductDataLoader',
-function($scope,DataLoader,Config,foundationApi,focus,$state,PDL){
+'$scope','DataLoader','Config','FoundationApi','focus','$state','ProductDataManager',
+function($scope,DataLoader,Config,foundationApi,focus,$state,PDM){
 
 	// log('Me estan creando CTM');
 
@@ -74,7 +74,7 @@ function($scope,DataLoader,Config,foundationApi,focus,$state,PDL){
 		if(config.debug){
 			window.scope_product = $scope;
 			$scope.DataLoader = DataLoader;//!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			$scope.PDL = PDL;//!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			$scope.PDM = PDM;//!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		}
 
 	}
@@ -262,7 +262,7 @@ function($scope,DataLoader,Config,foundationApi,focus,$state,PDL){
 	/* *********************************************************************************************************
 		DATA REFRESHING
 	********************************************************************************************************* */
-	PDL.then(function(data){
+	PDM.then(function(data){
 
 		log('ProductCtrl: Actualizando vista');
 
