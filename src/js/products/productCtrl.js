@@ -5,8 +5,8 @@ Product controller
 (function(){'use strict';}());
 
 angular.module('cafeManagerApp').controller('ProductCtrl',[
-'$scope','DataLoader','Config','FoundationApi','focus','$state','ProductDataManager',
-function($scope,DataLoader,Config,foundationApi,focus,$state,PDM){
+'$scope','DataSynchronizer','Config','FoundationApi','focus','$state','ProductDataManager',
+function($scope,dataSynchronizer,Config,foundationApi,focus,$state,PDM){
 
 	// log('Me estan creando CTM');
 
@@ -73,7 +73,7 @@ function($scope,DataLoader,Config,foundationApi,focus,$state,PDM){
 
 		if(config.debug){
 			window.scope_product = $scope;
-			$scope.DataLoader = DataLoader;//!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			$scope.dataSynchronizer = dataSynchronizer;//!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			$scope.PDM = PDM;//!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		}
 

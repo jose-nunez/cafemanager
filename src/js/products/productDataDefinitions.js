@@ -4,21 +4,13 @@ Product Data Models
 *****************************************/
 (function(){'use strict';}());
 
-angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions',function(CD){
+angular.module('cafeManagerApp').factory('ProductDataDefinitions',['DataDefinitions','ObjectUtils',function(DD,objectUtils){
 
-	function extractIds(idsObjs){
-		var arr = [];
-		for(var i in idsObjs){
-			arr.push(idsObjs[i].id);
-		}
-		return arr;
-	}
-
-	var createPrototype = CD.createPrototype;
+	var createPrototype = DD.createPrototype;
 
 	/* ModifierExtraSingle *********************/
 	var ModifierExtraSingle = function(data){		
-			CD.Collectionable.apply(this,arguments);
+			DD.Collectionable.apply(this,arguments);
 		};
 	createPrototype(ModifierExtraSingle,
 		{
@@ -31,7 +23,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				delete(this.modifier_id);
 			},
 			unNormalize: function(){
-				var my_clone = CD.clone(this,true);
+				var my_clone = DD.clone(this,true);
 				// delete(my_clone.collector);
 				delete(my_clone.$$hashKey);
 				
@@ -45,7 +37,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				return my_clone;
 			},
 			reLinkReferenced: function(){					
-				CD.Collectionable.prototype.reLinkReferenced.call(this,
+				DD.Collectionable.prototype.reLinkReferenced.call(this,
 					// No se sabe si los que yo referencio me referencian. Pero los mando igual y ellos verán
 					'modifier_extra_single',['single','extra','modifier']);
 			},
@@ -59,22 +51,22 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				}
 			},
 		},
-	CD.Collectionable);
+	DD.Collectionable);
 
 	/* ModifierExtraSingles *********************/
 	var ModifierExtraSingles = function(data){
-			CD.Collection.apply(this,arguments);
+			DD.Collection.apply(this,arguments);
 		};
 	createPrototype(ModifierExtraSingles,
 		{
 			__elemClass__:ModifierExtraSingle,
 		},
-	CD.Collection);
+	DD.Collection);
 
 
 	/* PRECIO *********************/
 	var Price = function(data){
-			CD.Collectionable.apply(this,arguments);
+			DD.Collectionable.apply(this,arguments);
 			/*active,amount,created,deleted,description,id,name,pack_id,priority,single_id,type,units,updated,validity_end,validity_start*/
 			//type -> 1:Costo|2:Venta|3:Oferta|4:Paquete|5:Personalizado(en el momento)
 		};
@@ -99,7 +91,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				delete(this.pack_id);
 			},
 			unNormalize: function(){
-				var my_clone = CD.clone(this,true);
+				var my_clone = DD.clone(this,true);
 
 				delete(my_clone.$$hashKey);
 				
@@ -111,7 +103,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				return my_clone;
 			},
 			reLinkReferenced: function(){
-				CD.Collectionable.prototype.reLinkReferenced.call(this,
+				DD.Collectionable.prototype.reLinkReferenced.call(this,
 					// No se sabe si los que yo referencio me referencian. Pero los mando igual y ellos verán
 					'price',['single','pack']);
 			},
@@ -128,23 +120,23 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				return !(productType=='pack' && this.type==4);
 			},
 		},
-	CD.Collectionable);
+	DD.Collectionable);
 
 
 	/* COLECCION DE PRECIOS *********************/
 	var Prices = function(data){
-			CD.Collection.apply(this,arguments);
+			DD.Collection.apply(this,arguments);
 		};
 	createPrototype(Prices,
 		{
 			__elemClass__: Price,
 		},
-	CD.Collection);
+	DD.Collection);
 
 
 	/* CATEGORIA *********************/
 	var Category = function(data){
-			CD.Collectionable.apply(this,arguments);
+			DD.Collectionable.apply(this,arguments);
 			// id-> 1:all|2:sale|3:nocat|4:packs|5:nostock|6:disabled
 			/*children,created,id,name,packs,parent,priority,singles,updated*/
 		};
@@ -155,16 +147,16 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 			},
 			normalize: function(sources){
 				this.parent = sources.categories.get(this.parent);
-				this.children = new CD.Collection({__elemClass__:Category,elements:sources.categories.get(extractIds(this.children))});
+				this.children = new DD.Collection({__elemClass__:Category,elements:sources.categories.get(objectUtils.extractIds(this.children))});
 				
 				this.products = new Products();
-				this.products.addElements('single',sources.products.get('single',extractIds(this.singles)));
-				this.products.addElements('pack',sources.products.get('pack',extractIds(this.packs)));
+				this.products.addElements('single',sources.products.get('single',objectUtils.extractIds(this.singles)));
+				this.products.addElements('pack',sources.products.get('pack',objectUtils.extractIds(this.packs)));
 				delete this.singles;
 				delete this.packs;
 			},
 			unNormalize: function(){
-				var my_clone = CD.clone(this,true);
+				var my_clone = DD.clone(this,true);
 				// delete(my_clone.collector);
 				delete(my_clone.$$hashKey);
 				
@@ -178,11 +170,11 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 			},
 			reLinkReferenced: function(){
 				// No se sabe si los que yo referencio me referencian. Pero los mando igual y ellos verán
-				CD.Collectionable.prototype.reLinkReferenced.call(this,
+				DD.Collectionable.prototype.reLinkReferenced.call(this,
 					'category',['products']);
-				CD.Collectionable.prototype.reLinkReferenced.call(this,
+				DD.Collectionable.prototype.reLinkReferenced.call(this,
 					'parent','children');
-				CD.Collectionable.prototype.reLinkReferenced.call(this,
+				DD.Collectionable.prototype.reLinkReferenced.call(this,
 					'child','parent');
 			},
 			reLink: function(type,newObj){
@@ -216,12 +208,12 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				return this.getProducts(incChildren,'isEnabled',type);
 			},
 		},
-	CD.Collectionable);
+	DD.Collectionable);
 
 
 	/* COLECCION DE CATEGORÍAS *********************/
 	var Categories = function(data){
-			CD.Collection.apply(this,arguments);
+			DD.Collection.apply(this,arguments);
 
 			this.setSelected();
 			this.specialIds = this.getSpecialIds();
@@ -237,12 +229,12 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				return [1,2,3,4,5,6];
 			},
 		},
-	CD.Collection);
+	DD.Collection);
 
 
 	/* EXTRA *********************/
 	var Extra = function(data){
-			CD.Collectionable.apply(this,arguments);
+			DD.Collectionable.apply(this,arguments);
 		};
 	createPrototype(Extra,
 		{
@@ -250,11 +242,11 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				return {selected: selected==this};
 			},
 		},
-	CD.Collectionable);
+	DD.Collectionable);
 
 	/* COLECCION DE EXTRAS *********************/
 	var Extras = function(data){
-			CD.Collection.apply(this,arguments);
+			DD.Collection.apply(this,arguments);
 			this.setSelected();
 		};
 	createPrototype(Extras,
@@ -272,14 +264,14 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				this.selected = undefined;
 			}
 		},
-	CD.Collection);
+	DD.Collection);
 
 
 	/* PRODUCTO Unico *********************/
 	/*categories,code,created,deleted,description,enabled_packs,enabled_single,id,image,name,packs,prices,recipe,stock,updated*/
 	var Single = function(data){
 			if(data){
-				CD.Collectionable.apply(this,arguments);
+				DD.Collectionable.apply(this,arguments);
 				this.status = {priceable: true,selectable: true,expanded:false,overed:false,};
 			}
 		};
@@ -328,18 +320,18 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				return Boolean(this.stock);
 			},
 			normalize: function(sources){
-				this.categories = new Categories({elements:sources.categories.get(extractIds(this.categories))});
-				this.prices = new Prices({elements:sources.prices.get(extractIds(this.prices))});
+				this.categories = new Categories({elements:sources.categories.get(objectUtils.extractIds(this.categories))});
+				this.prices = new Prices({elements:sources.prices.get(objectUtils.extractIds(this.prices))});
 
 				if(this.type=='single'){
-					this.packs = new CD.Collection({__elemClass__:Pack,elements:sources.products.get('pack',extractIds(this.packs))});
-					this.extras = new CD.Collection({__elemClass__:Extra,elements:sources.extras.get(extractIds(this.extras))});
-					this.modifiers = new CD.Collection({elements:sources.modifiers.get(extractIds(this.modifiers))});
-					this.modifier_extra_singles = new CD.Collection({__elemClass__:ModifierExtraSingle,elements:sources.modifier_extra_singles.get(extractIds(this.modifier_extra_singles))});
+					this.packs = new DD.Collection({__elemClass__:Pack,elements:sources.products.get('pack',objectUtils.extractIds(this.packs))});
+					this.extras = new DD.Collection({__elemClass__:Extra,elements:sources.extras.get(objectUtils.extractIds(this.extras))});
+					this.modifiers = new DD.Collection({elements:sources.modifiers.get(objectUtils.extractIds(this.modifiers))});
+					this.modifier_extra_singles = new DD.Collection({__elemClass__:ModifierExtraSingle,elements:sources.modifier_extra_singles.get(objectUtils.extractIds(this.modifier_extra_singles))});
 				}
 			},
 			unNormalize: function(){
-				var my_clone = CD.clone(this,true);
+				var my_clone = DD.clone(this,true);
 				// delete(my_clone.collector);
 				delete(my_clone.$$hashKey);
 				
@@ -355,7 +347,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				return my_clone;
 			},
 			reLinkReferenced: function(){
-				CD.Collectionable.prototype.reLinkReferenced.call(this,
+				DD.Collectionable.prototype.reLinkReferenced.call(this,
 					// No se sabe si los que yo referencio me referencian. Pero los mando igual y ellos verán
 					'single',['categories','prices','extras','modifier_extra_singles','modifiers','packs']);
 			},
@@ -371,7 +363,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				}
 			},
 		},
-	CD.Collectionable);
+	DD.Collectionable);
 
 
 	/* PAQUETE *********************/
@@ -403,7 +395,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 			normalize: function(sources){
 				Single.prototype.normalize.call(this,sources);
 				this.updatePackPrice();
-				this.singles = new CD.Collection({__elemClass__:Single,elements:sources.products.get('single',extractIds(this.singles))});
+				this.singles = new DD.Collection({__elemClass__:Single,elements:sources.products.get('single',objectUtils.extractIds(this.singles))});
 				this.updatePackStock();
 			},
 			unNormalize: function(){
@@ -414,7 +406,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				return my_clone;
 			},
 			reLinkReferenced: function(){
-				CD.Collectionable.prototype.reLinkReferenced.call(this,
+				DD.Collectionable.prototype.reLinkReferenced.call(this,
 					// No se sabe si los que yo referencio me referencian. Pero los mando igual y ellos verán
 					'pack',['categories','prices','singles']);
 			},
@@ -450,7 +442,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 
 	/* COLECCION DE PRODUCTOS *********************/
 	var Products = function(data){
-			CD.MultiCollection.apply(this,arguments);
+			DD.MultiCollection.apply(this,arguments);
 		};
 	createPrototype(Products,
 		{
@@ -497,7 +489,7 @@ angular.module('cafeManagerApp').factory('ProductDataModels',['ClassDefinitions'
 				return filtered;
 			},*/
 		},
-	CD.MultiCollection);
+	DD.MultiCollection);
 
 
 	var ProductsSelectable = function(data){

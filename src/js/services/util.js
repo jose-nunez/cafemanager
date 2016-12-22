@@ -69,3 +69,23 @@ angular.module('cafeManagerApp').factory('WindowResize',[function() {
 		},
 	};
 }]);
+
+
+
+
+angular.module('cafeManagerApp').factory('ObjectUtils',[function() {
+
+	//Retrieve array of objects containind id attribute.
+	var extractIds = function (idsObjs){
+		var arr = [];
+		for(var i in idsObjs){
+			if(idsObjs[i].id !== undefined || idsObjs[i].id !== null) arr.push(idsObjs[i].id);
+		}
+		return arr;
+	};
+
+	return {
+			extractIds:extractIds
+	};
+
+}]);

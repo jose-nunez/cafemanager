@@ -4,7 +4,14 @@ DataLoader
 *****************************************/
 (function(){'use strict';}());
 
-angular.module('cafeManagerApp').factory('DataLoader',['$q','ErrorHandler','Config',function($q,ErrorHandler,Config){
+angular.module('cafeManagerApp').factory('DataSynchronizer',['$q','ErrorHandler','Config',function($q,ErrorHandler,Config){
+
+
+	/*
+	Synchronizes data between client and server. 
+	Supports created/edited dates, pagination/segmentation , client cache (storage), pushing notifications, 
+	loading status (future!)
+	*/
 
 	var creatingSocket = $q.defer();
 	/*onRespusta: connecting.resolve(data);
@@ -12,9 +19,10 @@ angular.module('cafeManagerApp').factory('DataLoader',['$q','ErrorHandler','Conf
 	
 	var DataLoader = {
 		socket: undefined,
-		// Each client as its own getTypes. No duplicated objects across the app.
 		clients:{},
-		suscribe: function(groupType,getTypes,callback){
+		//Suscribes clients for pushing dat updates and notifications
+		// Each client as its own getTypes. No duplicated objects across the app. Updating becomes a mess.
+		suscribe: function(groupType,getTypes,callback){ 
 			this.clients[groupType] = {getTypes:getTypes,callback:callback,lastUpdated:undefined};
 			this.get(groupType);
 			return true; // Nothing special
@@ -28,8 +36,8 @@ angular.module('cafeManagerApp').factory('DataLoader',['$q','ErrorHandler','Conf
 			}
 			return null;
 		},
-		get: function(getType,resetDate){
-			log('Voy a pedir '+getType);
+		get: function(getType,resetDate){ //It can be groupType or getType
+			log('Voy a pedir '+ getType);
 			// Socket enqueues requests while disconnected
 			// Waits until it's created
 			var self = this;
@@ -43,7 +51,7 @@ angular.module('cafeManagerApp').factory('DataLoader',['$q','ErrorHandler','Conf
 			}
 		},
 		update: function(getType,obj){
-			if(obj.getData) obj = obj.getData();
+			// if(obj.getData) obj = obj.getData();
 			var self = this;
 			creatingSocket.promise.then(function(){
 				self.socket.emit('update',{type:getType,obj:obj});

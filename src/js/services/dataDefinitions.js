@@ -4,7 +4,7 @@ Definiciones de clases y herencia
 (function(){'use strict';}());
 
 
-angular.module('cafeManagerApp').factory('ClassDefinitions',[function(){
+angular.module('cafeManagerApp').factory('DataDefinitions',[function(){
 	// COSNTRUCTOR
 	/*
 	permite herencias sucesivas y llamados a metodos padres

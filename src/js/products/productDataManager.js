@@ -4,7 +4,7 @@ Product Data Manger
 *****************************************/
 (function(){'use strict';}());
 
-angular.module('cafeManagerApp').factory('ProductDataManager',['$q','DataLoader','ClassDefinitions','ProductDataModels',function($q,DataLoader,CD,PDM){
+angular.module('cafeManagerApp').factory('ProductDataManager',['$q','DataSynchronizer','DataDefinitions','ProductDataDefinitions',function($q,dataSynchronizer,DD,PDD){
 
 	var productsOptions = {
 		allPriceable: "none", // expand|over|none
@@ -17,12 +17,12 @@ angular.module('cafeManagerApp').factory('ProductDataManager',['$q','DataLoader'
 		productQuantity: 1,
 	};
 
-	var prices = new PDM.Prices();
-	var categories = new PDM.Categories();
-	var products = new PDM.ProductsSelectable({options:productsOptions});
-	var extras = new PDM.Extras();
-	var modifiers = new CD.Collection();
-	var modifier_extra_singles = new PDM.ModifierExtraSingles();
+	var prices = new PDD.Prices();
+	var categories = new PDD.Categories();
+	var products = new PDD.ProductsSelectable({options:productsOptions});
+	var extras = new PDD.Extras();
+	var modifiers = new DD.Collection();
+	var modifier_extra_singles = new PDD.ModifierExtraSingles();
 
 	var loadingProducts = $q.defer();
 
@@ -99,7 +99,7 @@ angular.module('cafeManagerApp').factory('ProductDataManager',['$q','DataLoader'
 		});
 
 
-		var resp = {
+		var result = {
 			productsOptions:productsOptions,
 			prices:prices,
 			categories:categories,
@@ -109,24 +109,24 @@ angular.module('cafeManagerApp').factory('ProductDataManager',['$q','DataLoader'
 			modifier_extra_singles:modifier_extra_singles,
 		};
 
-		loadingProducts.resolve(resp);
+		loadingProducts.resolve(result);
 	};
 
 	updateUnit = function(type,obj){
-		DataLoader.update(type,obj);		
-		// DataLoader.update('single',{ name: 'Lisa Maria',id:1});
+		dataSynchronizer.update(type,obj);		
+		// dataSynchronizer.update('single',{ name: 'Lisa Maria',id:1});
 	};
 
 	// INICIA CARGA DE DATOS
-	// DataLoader.get('all').then(refreshContents);
-	// DataLoader.get('all_product').then(refreshContents);
+	// dataSynchronizer.get('all').then(refreshContents);
+	// dataSynchronizer.get('all_product').then(refreshContents);
 	
 	// List of get types. 
 	// Gives the list or an element of this at the moment to subscribe to the data loader.
 	// Must match with Server names.
 	var groupType = 'all_product';
 	var getTypes = ['singles','packs','categories','prices','extras','modifiers','modifier_extra_singles'];
-	DataLoader.suscribe(groupType,getTypes,refreshContents);
+	dataSynchronizer.suscribe(groupType,getTypes,refreshContents);
 	
 	return loadingProducts.promise;
 
