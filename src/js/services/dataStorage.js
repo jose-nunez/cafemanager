@@ -12,6 +12,7 @@ angular.module('cafeManagerApp').factory('DataFaker',[function(){
 
 angular.module('cafeManagerApp').factory('DataStorage',['ErrorHandler',function(ErrorHandler){
 
+	return {};
 
 
 }]);

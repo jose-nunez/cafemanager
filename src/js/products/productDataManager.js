@@ -123,10 +123,10 @@ angular.module('cafeManagerApp').factory('ProductDataManager',['$q','DataSynchro
 	
 	// List of get types. 
 	// Gives the list or an element of this at the moment to subscribe to the data loader.
-	// Must match with Server names.
-	var groupType = 'all_product';
-	var getTypes = ['singles','packs','categories','prices','extras','modifiers','modifier_extra_singles'];
-	dataSynchronizer.suscribe(groupType,getTypes,refreshContents);
+	// MUST MATCH WITH SERVER NAMES!!!!!!!!!!
+	var type = 'all_product';
+	var subTypes = ['singles','packs','categories','prices','extras','modifiers','modifier_extra_singles'];
+	dataSynchronizer.suscribe(type,subTypes,refreshContents);
 	
 	return loadingProducts.promise;
 

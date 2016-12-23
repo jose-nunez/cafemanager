@@ -1,69 +1,68 @@
 /**************************************
 CAFE MANAGER
-DataLoader
+DataSynchronizer
 *****************************************/
 (function(){'use strict';}());
 
-angular.module('cafeManagerApp').factory('DataSynchronizer',['$q','ErrorHandler','Config',function($q,ErrorHandler,Config){
+angular.module('cafeManagerApp').factory('DataSynchronizer',['$q','ErrorHandler','Config','DataStorage',function($q,ErrorHandler,Config,dataStorage){
 
 
 	/*
 	Synchronizes data between client and server. 
-	Supports created/edited dates, pagination/segmentation , client cache (storage), pushing notifications, 
+	Supports created/edited dates, pagination/segmentation , client cache (storage), pushing updates/notifications, 
 	loading status (future!)
 	*/
 
 	var creatingSocket = $q.defer();
-	/*onRespusta: connecting.resolve(data);
-	onError: connecting.reject(err);*/
+	var the_socket;
+	var clients = {};
+
+	function getClientType(type_subType){
+		if(clients[type_subType]!=undefined) return type_subType;
+		else{
+			for(var type in clients){
+				if(clients[type].subTypes.indexOf(type_subType)!=-1) return type;
+			}
+		}
+		return null;
+	}
 	
-	var DataLoader = {
-		socket: undefined,
-		clients:{},
+	var dataSynchronizer = {
+		
 		//Suscribes clients for pushing dat updates and notifications
-		// Each client as its own getTypes. No duplicated objects across the app. Updating becomes a mess.
-		suscribe: function(groupType,getTypes,callback){ 
-			this.clients[groupType] = {getTypes:getTypes,callback:callback,lastUpdated:undefined};
-			this.get(groupType);
+		// Each client as its own type and subTypes. No duplicated objects across the app. Updating becomes a mess.
+		suscribe: function(type,subTypes_callback,callback){
+
+			var is_grouptype = typeof type ==="string" && subTypes_callback instanceof Array && callback instanceof Function;
+			var is_singleType = typeof type ==="string" && subTypes_callback instanceof Function;
+			
+			if(is_grouptype){
+				clients[type] = {subTypes:subTypes_callback,callback:callback,lastUpdated:undefined};
+			}
+			else if(is_singleType){
+				clients[type] = {callback:subTypes_callback,lastUpdated:undefined};
+			}
+			
+			this.get(type);
 			return true; // Nothing special
 		},
-		getGroupType: function(getType){
-			if(this.clients[getType]!=undefined) return getType;
-			else{
-				for(var groupType in this.clients){
-					if(this.clients[groupType].getTypes.indexOf(getType)!=-1) return groupType;
-				}
-			}
-			return null;
-		},
-		get: function(getType,resetDate){ //It can be groupType or getType
-			log('Voy a pedir '+ getType);
+		get: function(type,resetDate){ //It can be groupType or getType
+			log('Voy a pedir '+ type);
 			// Socket enqueues requests while disconnected
 			// Waits until it's created
-			var self = this;
 			creatingSocket.promise.then(function(){
-				self.socket.emit('get',{type:getType,date: resetDate? undefined : self.clients[self.getGroupType(getType)].lastUpdated});
+				the_socket.emit('get',{type:type,lastUpdated: resetDate? undefined : clients[getClientType(type)].lastUpdated});
 			});
 		},
 		getAll: function(resetDate){
-			for(var groupType in this.clients){
-				this.get(groupType,resetDate);
+			for(var type in clients){
+				this.get(type,resetDate);
 			}
 		},
-		update: function(getType,obj){
-			// if(obj.getData) obj = obj.getData();
-			var self = this;
+		update: function(type,obj){
 			creatingSocket.promise.then(function(){
-				self.socket.emit('update',{type:getType,obj:obj});
+				the_socket.emit('update',{type:type,obj:obj});
 			});
-		},
-		got: function(data){
-			var reservedWords = ['date','count'];
-			for(var getType in data){ 
-				if(reservedWords.indexOf(getType)==-1) break;
-			}
-			this.clients[this.getGroupType(getType)].callback(data);
-			this.clients[this.getGroupType(getType)].lastUpdated = data.date;
 		},
 		/*update: function(type,obj){
 			var self = this;
@@ -80,7 +79,21 @@ angular.module('cafeManagerApp').factory('DataSynchronizer',['$q','ErrorHandler'
 		}*/
 	};
 	
-	var MrSocket = {
+	function resolveClientType(data){
+		var reservedWords = ['lastUpdated','count'];
+		for(var type in data){
+			if(reservedWords.indexOf(type)==-1) break;
+		}
+		return getClientType(type);
+	}
+
+	function received(data){
+		var type = resolveClientType(data);
+		clients[type].callback(data);
+		clients[type].lastUpdated = data.lastUpdated;
+	}
+	
+	var socketConfig = {
 		connect: function(){ log('Conectado al servidor'); },
 		connect_error: function(){ log('Cliente socket: connect_error'); },
 		connect_timeout: function(){ log('Cliente socket: connect_timeout'); },
@@ -93,32 +106,33 @@ angular.module('cafeManagerApp').factory('DataSynchronizer',['$q','ErrorHandler'
 		disconnect: function(){ 
 			log('Desconectado del servidor');
 			// Ask for all the updates while disconnected
-			DataLoader.getAll();
+			dataSynchronizer.getAll();
 		},
 		datasent:function(data){
 			log('Datos recibidos del servidor',data);
-			/*DataLoader.lastUpdated = data.date;
-			loadingData.resolve(data);*/
-			DataLoader.got(data);
+			received(data);
 		},
 	};
 
 	Config.then(function(config){
-		DataLoader.socket = io(config.SERVER_ADDR);
+		the_socket = io(config.SERVER_ADDR);
 		creatingSocket.resolve();
-		DataLoader.socket.on('connect',MrSocket.connect);
-		DataLoader.socket.on('connect_error',MrSocket.connect_error);
-		DataLoader.socket.on('connect_timeout',MrSocket.connect_timeout);
-		DataLoader.socket.on('reconnect',MrSocket.reconnect);
-		DataLoader.socket.on('reconnect_attempt',MrSocket.reconnect_attempt);
-		DataLoader.socket.on('reconnecting',MrSocket.reconnecting);
-		DataLoader.socket.on('reconnect_error',MrSocket.reconnect_error);
-		DataLoader.socket.on('reconnect_failed',MrSocket.reconnect_failed);
-		DataLoader.socket.on('datasent',MrSocket.datasent);
-		DataLoader.socket.on('disconnect',MrSocket.disconnect);
+
+		// Default events
+		the_socket.on('connect',socketConfig.connect);
+		the_socket.on('connect_error',socketConfig.connect_error);
+		the_socket.on('connect_timeout',socketConfig.connect_timeout);
+		the_socket.on('reconnect',socketConfig.reconnect);
+		the_socket.on('reconnect_attempt',socketConfig.reconnect_attempt);
+		the_socket.on('reconnecting',socketConfig.reconnecting);
+		the_socket.on('reconnect_error',socketConfig.reconnect_error);
+		the_socket.on('reconnect_failed',socketConfig.reconnect_failed);
 		
-		DataLoader.socket.on('update_error',ErrorHandler.handle);
+		// Custom events
+		the_socket.on('datasent',socketConfig.datasent);
+		the_socket.on('disconnect',socketConfig.disconnect);
+		the_socket.on('update_error',ErrorHandler.handle);
 	});
 
-	return DataLoader;
+	return dataSynchronizer;
 }]);
