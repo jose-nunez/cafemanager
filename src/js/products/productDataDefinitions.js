@@ -188,9 +188,20 @@ angular.module('cafeManagerApp').factory('ProductDataDefinitions',['DataDefiniti
 					default:
 				}
 			},
+			hasProduct: function(product_id,type,not_incChildren){
+				if(this.products.get(type,product_id)) return true;
+				
+				else if(!not_incChildren && this.children){
+					var children = this.children.getAll();
+					for(var i in children){
+						if(children[i].hasProduct(product_id,type,not_incChildren)) return true;
+					}
+				}
+				return false;
+			},
 			getProducts: function(incChildren,filter,type){
 				var products = filter? this.products[filter]({type:type}) : this.products.getAll();
-				if(incChildren!==false){
+				if(incChildren!==false && this.children){
 					var children = this.children.getAll();
 					for(var i in children){
 						products = products.concat(children[i].getProducts(incChildren,filter));
